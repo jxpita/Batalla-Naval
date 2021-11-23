@@ -1,2 +1,2 @@
 # Batalla-Naval
-Juego "Batalla Naval" simulado en emu8086.
+Juego "Batalla Naval" (Battleship) simulado en emu8086.
