@@ -5,7 +5,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ## Vista Previa
 ### Inicio
-![image](https://user-images.githubusercontent.com/34144827/143296427-8cf7ca52-f018-4438-840d-48491fe291ca.png)
+![image](https://user-images.githubusercontent.com/34144827/143302707-8a660f4e-d0b4-4abb-94c7-ba89d3559d5d.png)
 
 <br/>
 
