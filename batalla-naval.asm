@@ -343,7 +343,15 @@ ACTUALIZAR:      ;Actualizacion de TABLERO_JUGADOR
     
     ;Muestra los nombres de las columnas de la matriz
     MOV AH, 09h 
-    LEA DX, COLS    
+    LEA DX, COLS1    
+    INT 21h 
+    
+    MOV AH, 09h 
+    LEA DX, COLS2    
+    INT 21h 
+    
+    MOV AH, 09h 
+    LEA DX, COLS3    
     INT 21h 
     
     MOV AH,  09h
@@ -372,7 +380,7 @@ ACTUALIZAR:      ;Actualizacion de TABLERO_JUGADOR
         MOV DL, TABLERO_JUGADOR[SI]
         INT 21h
         INC SI
-        LOOP MOSTRAR2     ;Muestra la fila SI (indice) como se encuentra actualmente en TABLERO_JUGADOR
+        LOOP MOSTRAR2     ;Muestra la fila[SI] (indice) como se encuentra actualmente en TABLERO_JUGADOR
                                                                       
         MOV AH, 9
         LEA DX, SDL
@@ -662,14 +670,40 @@ GANAR:
     MOV AH, 00h
     MOV AL, 03h
     INT 10h
-
-    ;Muestra en consola mensaje de felicitaciones a jugador ganador
-    MOV AH, 09h
-    LEA DX, GANADOR
+    
+    MOV AH, 09H
+    LEA DX, FEL1
     INT 21H
    
     MOV AH, 09H
-    LEA DX, SDL
+    LEA DX, FEL2
+    INT 21H
+   
+    MOV AH, 09H
+    LEA DX, FEL3
+    INT 21H
+   
+    MOV AH, 09H
+    LEA DX, FEL4
+    INT 21H
+   
+    MOV AH, 09H
+    LEA DX, FEL5
+    INT 21H
+    
+    MOV AH, 09H
+    LEA DX, FEL6
+    INT 21H
+   
+    MOV AH, 09H
+    LEA DX, FEL7
+    INT 21H
+   
+    
+
+    ;Muestra en consola mensaje de felicitaciones a jugador ganador
+    MOV AH, 09h
+    LEA DX, GANADOR1
     INT 21H
    
     MOV AH, 09H
@@ -677,11 +711,7 @@ GANAR:
     INT 21H
    
     MOV AH, 09H
-    LEA DX, SDL
-    INT 21H
-   
-    MOV AH, 09H
-    LEA DX, SDL
+    LEA DX, GANADOR3
     INT 21H
    
     JMP MENU3       ;Saltar al menu para intentar de nuevo o no
@@ -869,7 +899,9 @@ MENSAJE_FIN3 DB 13, 20 DUP(32), 192, 38 DUP(196), 217, "$"
 
 
 ;CABECERA DE LA MATRIZ
-COLS DB "\ABCDE$"       ;"\ A B C D E F $"
+COLS1 DB 218, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 191, 10, 13, "$"
+COLS2 DB 179, "   ", 179, " A ", 179, " B ", 179, " C ", 179, " D ", 179, " E ", 179, " F ", 179, 10, 13, "$"       ;"\ A B C D E F $"
+COLS3 DB 195, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 180, 10, 13, "$"
 ;TABLERO REAL DEL JUEGO
 TABLERO_REAL DB 25 DUP('0')
 ;TABLERO PARA VISUALIZACION DEL JUGADOR
@@ -911,9 +943,19 @@ OPC_SI   DB 13, 9, "1. Si!", 10, "$"
 OPC_NO   DB 13, 9, "2. No!", 10, "$"
 
 
+;FELICITACIONES!
+FEL1 DB 2 DUP(10), 13, 7 DUP(32), 201, 64 DUP(205), 187, 10, "$"
+FEL2 DB 13, 7 DUP(32),  186, "  ___ ___ _    ___ ___ ___ _____ _   ___ ___ ___  _  _ ___ ___  ", 186, 10, "$"    
+FEL3 DB 13, 7 DUP(32),  186, " | __| __| |  |_ _/ __|_ _|_   _/_\ / __|_ _/ _ \| \| | __/ __| ", 186, 10, "$"
+FEL4 DB 13, 7 DUP(205), 185, " | _|| _|| |__ | | (__ | |  | |/ _ \ (__ | | (_) | .` | _|\__ \ ", 204, 7 DUP(205), "$"
+FEL5 DB 13, 7 DUP(32),  186, " |_| |___|____|___\___|___| |_/_/ \_\___|___\___/|_|\_|___|___/ ", 186, 10, "$"
+FEL6 DB 13, 7 DUP(32),  186, "                                                                ", 186, 10, "$"    
+FEL7 DB 13, 7 DUP(32), 200, 64 DUP(205), 188, 10, "$"      
 ;MENSAJE SI JUGADOR GANA PARTIDA
-GANADOR  DB 10, 13, "Felicitaciones, lograste hundir la flota naval enemiga.", 10, "$"
-GANADOR2 DB 13, "Has ganado el juego!!", 2 DUP(10), "$"
+GANADOR1  DB 13, 10, 6 DUP(32), 218, 66 DUP(196), 191, 10, "$"
+GANADOR2  DB 13, ">>>", 3 DUP(196), 180, "  Lograste hundir la flota naval enemiga. Has ganado el juego!!!  ", 195, 3 DUP(196), "<<<$"
+GANADOR3  DB 13, 6 DUP(32), 192, 66 DUP(196), 217, 3 DUP(10), "$"
+
 
     
 ;NV1 = Navio del jugador    
@@ -924,3 +966,9 @@ NE1 DB "Indica las coordenadas donde crees que est", 160, "n las naves del opone
 
 CA1 DB " $"
 
+
+ 
+ 
+ 
+ 
+                                                               
