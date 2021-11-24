@@ -10,7 +10,7 @@ BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
     MOV AL, 03h     ;Modo texto
     INT 10h
                         
-    ;Muestra en consola mensaje de bienvenida
+    ;Muestra en consola cartel de bienvenida
     MOV AH, 09h 
     LEA DX, BV1
     INT 21h 
@@ -52,7 +52,7 @@ MENU:       ;Menu principal
     ;Indica al programa en que menu se encuentra el jugador
     MOV NUM_MENU, '1'
     
-    ;Muestra en consola menu principal de opciones  
+    ;Muestra en consola menu principal de opciones (Ingresa una opcion: )  
     MOV AH, 09h
     LEA DX, IUO
     INT 21h
@@ -60,7 +60,7 @@ MENU:       ;Menu principal
     MOV AH, 09h
     LEA DX, JUGAR
     INT 21h
-    
+
     MOV AH, 09H
     LEA DX, REGLAS
     INT 21H
@@ -86,7 +86,7 @@ MENU:       ;Menu principal
     JE MANUAL
    
     CMP AL, '3'    
-    JE SALIR_DEL_JUEGO
+    JE SALIR_JUEGO
     JG OP_INC
      
     
@@ -293,7 +293,7 @@ MENU2:      ;Bloque correspondiente al segundo menu, mostrado despues del manual
     JE MANUAL
    
     CMP AL, '3'    
-    JE SALIR_DEL_JUEGO
+    JE SALIR_JUEGO
     JG OP_INC 
 
 
@@ -397,7 +397,7 @@ ACTUALIZAR:      ;Actualizacion de TABLERO_JUGADOR
         JL MOSTRAR
        
         CMP [NUM_MISILES], '0'
-        JE FIN_DEL_JUEGO        ;Si la variable NUM_MISILES == 0 entonces ya no hay mas misiles disponibles y el juego acaba
+        JE FINAL_PARTIDA        ;Si la variable NUM_MISILES == 0 entonces ya no hay mas misiles disponibles y el juego acaba
        
         JMP JUEGO               ;Si la variable NUM_MISILES > 0 aun hay misiles disponibles para jugar
 
@@ -518,13 +518,13 @@ X1:         ;EJE "Y"
     MOV CX, 7   ;7 posibles lanzamientos de misil antes de que acabe el juego       ;CAMBIAR A 19
     
     
-JUEGOA:     ;Verifica que la posicion ingresada por el jugador no haya sido ingresada previamente
+CMP_LANZAMIENTO:     ;Verifica que la posicion ingresada por el jugador no haya sido ingresada previamente
      
     ;Compara el valor copiado desde AX con los lanzamientos guardados
     CMP BL, LANZAMIENTOS_REALIZADOS[SI]
     JE LANZAMIENTO_ILEGAL
     INC SI
-    LOOP JUEGOA     ;Realiza un bucle recorriendo todos los lanzamientos registrados para verificar que el jugador este realizando un lanzamiento legal
+    LOOP CMP_LANZAMIENTO     ;Realiza un bucle recorriendo todos los lanzamientos registrados para verificar que el jugador este realizando un lanzamiento legal
     
     ;Variable AUX contiene el indice actual del arreglo LANZAMIENTOS_REALIZADOS   
     MOV SI, [AUX]
@@ -581,7 +581,7 @@ ACIERTO:        ;Bloque para verificar si el jugador logro impactar un navio
    
     INC [NAV_IMP]            ;Aumenta el numero de navios impactados
     CMP [NAV_IMP], '5'       ;Compara con condicion de victoria
-    JE GANAR
+    JE VICTORIA
    
     JMP ACTUALIZAR      ;Regresa al bloque donde se actualiza el tablero del jugador
      
@@ -592,7 +592,7 @@ FALLO:
     JMP ACTUALIZAR      ;Regresa al bloque donde se actualiza el tablero del jugador
  
  
-FIN_DEL_JUEGO:
+FINAL_PARTIDA:
  
     MOV AH, 09h
     LEA DX, IMP1
@@ -606,10 +606,10 @@ FIN_DEL_JUEGO:
     LEA DX, IMP2
     INT 21h
    
-    JMP MENU3   
+    JMP RESETEAR_JUEGO   
     
    
-MENU3:  
+RESETEAR_JUEGO: 
 
     ;Indica al programa en que menu se encuentra el jugador
     MOV NUM_MENU, '3'
@@ -620,13 +620,16 @@ MENU3:
     MOV [AUX], 0
     MOV SI, 0
     MOV CX, 7       ;CAMBIAR A 19
-        
     
-RJUEGOA: 
     MOV LANZAMIENTOS_REALIZADOS[SI], 50
     INC SI
-    LOOP RJUEGOA
+    LOOP RESETEAR_JUEGO
     
+    JMP MENU3   
+    
+
+MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finalizar una partida
+
     ;Muestra en consola tercer menu (?Quieres intentar de nuevo?)
     MOV AH, 09h
     LEA DX, QJDN
@@ -658,7 +661,7 @@ RJUEGOA:
     JG OP_INC
       
        
-GANAR:
+VICTORIA:
     
     ;Limpia la consola
     MOV AH, 00h
@@ -710,7 +713,7 @@ GANAR:
     JMP MENU3       ;Saltar al menu para intentar de nuevo o no
          
          
-SALIR_DEL_JUEGO:    ;Bloque para salir del juego
+SALIR_JUEGO:    ;Bloque para salir del juego
     
     ;Limpiar consola
     MOV AH, 00h
