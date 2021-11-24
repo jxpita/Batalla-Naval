@@ -616,7 +616,7 @@ RESETEAR_JUEGO:
     
     ;Reinicia variables auxiliares
     MOV [NUM_MISILES], '8'
-    MOV [NAV_IMP}], '0'
+    MOV [NAV_IMP], '0'
     MOV [AUX], 0
     MOV SI, 0
     MOV CX, 7       ;CAMBIAR A 19
