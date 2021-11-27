@@ -425,17 +425,17 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
 ;    INT 10h 
     
     ;Muestra las letras de las columnas de la matriz
-    MOV AH, 09h 
-    LEA DX, L_SUPERIOR_MATRIZ    
-    INT 21h 
+;    MOV AH, 09h 
+;    LEA DX, L_SUPERIOR_MATRIZ    
+;    INT 21h 
     
     MOV AH, 09h 
     LEA DX, COLS    
     INT 21h 
     
-    MOV AH, 09h 
-    LEA DX, L_INTERMEDIA_MATRIZ    
-    INT 21h 
+;    MOV AH, 09h 
+;    LEA DX, L_INTERMEDIA_MATRIZ    
+;    INT 21h 
     
     CALL PRINT_SDL
     
@@ -446,42 +446,42 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
                                                 
     NUM_FILA:  
         ;Muestra en consola el digito del numero de fila
-        MOV AH, 02h
-        MOV DL, 179
-        INT 21h
-        MOV AH, 02h
-        MOV DL, 32
-        INT 21h 
+        ;MOV AH, 02h
+;        MOV DL, 179
+;        INT 21h
+;        MOV AH, 02h
+;        MOV DL, 32
+;        INT 21h 
         MOV AH, 02h
         MOV DL, BL
         INT 21h
-        MOV AH, 02h
-        MOV DL, 32
-        INT 21h
-        MOV AH, 02h
-        MOV DL, 179
-        INT 21h 
+        ;MOV AH, 02h
+;        MOV DL, 32
+;        INT 21h
+;        MOV AH, 02h
+;        MOV DL, 179
+;        INT 21h 
         
         ;Prepara registro CX para ejecutar CONTENIDO_FILA 6 veces (6 filas)                             
         MOV CX, 6       ;CAMBIAR A 5
            
     CONTENIDO_FILA: 
-        MOV AH, 02h
-        MOV DL, 32
-        INT 21h
+;        MOV AH, 02h
+;        MOV DL, 32
+;        INT 21h
         MOV AH, 02h
         MOV DL, TABLERO_REAL[SI]        ;AQUI USAR TABLERO_JUGADOR
         INT 21h
-        MOV AH, 02h
-        MOV DL, 32
-        INT 21h
-        MOV AH, 02h
-        MOV DL, 179
-        INT 21h
+        ;MOV AH, 02h
+;        MOV DL, 32
+;        INT 21h
+;        MOV AH, 02h
+;        MOV DL, 179
+;        INT 21h
         INC SI
         LOOP CONTENIDO_FILA     ;Muestra la fila[SI] (indice) como se encuentra actualmente en TABLERO_JUGADOR
                                                                       
-        CALL PRINT_SDL
+        ;CALL PRINT_SDL
         
 ;        CMP DI, 4
 ;        JLE LINEA_INTERMEDIA
@@ -489,9 +489,9 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
 ;        JG  LINEA_INFERIOR
 ;        
 ;        LINEA_INTERMEDIA:
-            MOV AH, 09h 
-            LEA DX, L_INTERMEDIA_MATRIZ    
-            INT 21h
+            ;MOV AH, 09h 
+            ;LEA DX, L_INTERMEDIA_MATRIZ    
+            ;INT 21h
         
        ; LINEA_INFERIOR:    
 ;            MOV AH, 09h
@@ -965,7 +965,7 @@ MSJ_ERR2 DB 9, "Intenta de nuevo. (Presiona cualquier tecla para continuar.)  $"
 
 ;REGLAS DEL JUEGO
 MAN1  DB 13, 2 DUP(10), 25 DUP(32), 201, 28 DUP(205), 187, 10, "$"
-MAN2  DB 13, 201, 24 DUP(205), 185, "  REGLAS DEL JUEGO:  ", 204, 24 DUP(205), 187, "$"
+MAN2  DB 13, 201, 28 DUP(205), 185, "  REGLAS DEL JUEGO  ", 204, 28 DUP(205), 187, 10, "$"
 MAN3  DB 13, 186, 24 DUP(32), 200, 28 DUP(205), 188, 24 DUP(32), 186, "$"
 MAN4  DB 186, "  Batalla naval es un juego de mesa para dos jugadores, en el cual ambos      ", 186, "$"
 MAN5  DB 186, "  tienen que intentar adivinar en qu", 130, " celdas est", 160, "n los nav", 161, "os del ememigo.    ", 186, "$"
