@@ -11,10 +11,10 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ### Reglas del juego
 * _Parte 1_
-![image](https://user-images.githubusercontent.com/34144827/143296638-83fbbca3-179f-4dd4-8495-bb771bae5538.png)
+![image](https://user-images.githubusercontent.com/34144827/143673209-c19a7b1d-bf0d-49e3-bbea-aba852831a4b.png)
 
 * _Parte 2_
-![image](https://user-images.githubusercontent.com/34144827/143296664-f13f9b52-9bb5-4ec3-a6b6-5a0db1b6064b.png)
+![image](https://user-images.githubusercontent.com/34144827/143673215-f5b73b90-9d80-48a2-a52e-4dd34b4c3c87.png)
 
 <br/>
 
