@@ -1,10 +1,9 @@
 TITLE BATALLA_NAVAL
 
-ORG 100h
-     
-     
- 
-     
+ORG 100h 
+
+
+
 BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
 
     ;Coloca la consola en modo video (80x25)
@@ -314,109 +313,347 @@ PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador
     JMP UBICAR_FLOTA
           
           
-UBICAR_FLOTA:     ;Calcula los navios del enemigo (computadora/PC) con la hora de la computadora
+UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
     
-    CALL GEN_POS_ALEA    
+    MOV DI, 2       ;Contador para ubicar 2 navios  (Ref: linea 384 => CMP DI, 0)
     
-    CALL DIRECCION_NAVIO
-    
-    UBICAR_SUBMARINO:
-         
-        MOV CX, 3
+    UBICAR_NAVIOS:  ;NOTA: Los navios ubicados pueden ser   [[ 2 PORTAVIONES | 2 CRUCEROS | 1 PORTAVIONES + 1 CRUCERO ]]
+        CMP DI, 0               ;Si contador (registro DI) == 0  ---> Ya se ubicaron los 2 navios
+        JE  UBICAR_SUBMARINO    ;Entonces saltar directamente a MOSTRAR_TABLERO_JUGADOR
         
-        MOV SI, BX
-            
-        ;BORRAR
-        ;MOV AH, 4
-        ;MOV SI, 28
-        ;BORRAR
-        
-        CMP HFLAG, 1
-        JE UBICAR_HORIZONTAL
-        JNE UBICAR_VERTICAL
-        
-        UBICAR_HORIZONTAL:
-            MOV AX, BX
-            MOV BX, 6
-            DIV BL
-            CMP AH, 3
-            JLE SUMAR_POS_H
-            JG RESTAR_POS_H
-            
-            SUMAR_POS_H:
-                MOV TABLERO_REAL[SI], 'S'
-                INC SI
-                LOOP SUMAR_POS_H
-                JMP MOSTRAR_TABLERO_JUGADOR
-            
-            RESTAR_POS_H:
-                MOV TABLERO_REAL[SI], 'S'
-                DEC SI
-                LOOP RESTAR_POS_H
-                JMP MOSTRAR_TABLERO_JUGADOR
-                            
-         UBICAR_VERTICAL:
-            MOV AX, BX
-            MOV BX, 6
-            DIV BL
-            CMP AL, 3
-            JLE SUMAR_POS_V
-            JG RESTAR_POS_V
-            
-            SUMAR_POS_V:
-                MOV TABLERO_REAL[SI], 'S'
-                ADD SI, 6
-                LOOP SUMAR_POS_V
-                JMP MOSTRAR_TABLERO_JUGADOR
-            
-            RESTAR_POS_V:
-                MOV TABLERO_REAL[SI], 'S'
-                SUB SI, 6
-                LOOP RESTAR_POS_V
-                JMP MOSTRAR_TABLERO_JUGADOR
-    
-    UBICAR_NAVIOS:
-        
-        CALL GEN_POS_ALEA
-        
-        CMP TABLERO_REAL[BX], 0
-        JNE UBICAR_NAVIOS    
-    
-        CALL DIRECCION_NAVIO
         
         MOV DX, 00h
         MOV AH, 2Ch
         INT 21h
-        
-        MOV CX, 2
-        
+
         MOV AL, DL
         MOV AH, 0
         MOV DX, 2
-        DIV DX
+        DIV DL
         CMP AH, 1
         JE  UBICAR_CRUCERO
-        JNE UBICAR_PORTAVION
-        
-        UBICAR_CRUCERO:
-        
-            LOOP UBICAR_NAVIOS
+        JNE UBICAR_PORTAVIONES
                 
-        UBICAR_PORTAVION:
-                         
-            LOOP UBICAR_NAVIOS
+        UBICAR_PORTAVIONES:   ;Ubica un PORTAVIONES de manera horizontal o vertical
+            CALL GEN_POS_ALEA       ;Genera posicion aleatoria para ubicar un PORTAVIONES (el resultado se almacena en el registro BX)
+            
+            CALL DIRECCION_NAVIO    ;Determina la direccion del PORTAVIONES (horizonal o vertical)
+        
+            MOV SI, BX          ;Copia la posicion inicial del PORTAVIONES en el registro SI
+            
+            MOV CX, TAM_PORT
+            
+            CMP HFLAG, 1
+            JE  UBICAR_PORT_H
+            JNE UBICAR_PORT_V
+            
+            UBICAR_PORT_H:      ;Ubica un PORTAVIONES horizontalmente
+                MOV AX, SI
+                MOV BX, 6
+                DIV BL 
+                
+                MOV BX, SI
+                
+                ;Posiciones criticas
+                CMP AH, 1       ;CASO 1: Un PORTAVIONES solo cabe horizontalmente hacia la DERECHA en las columnas 0 (A) o 1 (B)
+                JLE COLISION_DER_PORT   ;Verifica colisiones antes de ubicarlo
+                
+                CMP AH, 4       ;CASO 2: Un PORTAVIONES solo cabe horizontalmente hacia la IZQUIERDA en las columnas 4 (E) o 5 (F)
+                JGE COLISION_IZQ_PORT   ;Verifica colisiones antes de ubicarlo
+                
+                JMP UBICAR_PORTAVIONES    ;Si el PORTAVIONES no cabe horizontalmente hacia los lados salta al inicio del bloque para generar nueva posicion aleatoria
+                
+                COLISION_DER_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia la DERECHA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    INC BX                      ;Mueve el indice hacia la DERECHA
+                    LOOP COLISION_DER_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
+                    
+                    MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
+                        
+                    SUMAR_PORT_POS_X:           ;Si no colisiona, se ubica hacia la DERECHA, en la posicion aleatoria generada 
+                        MOV TABLERO_REAL[SI], 'P'
+                        INC SI
+                        LOOP SUMAR_PORT_POS_X
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2) 
+                        JMP UBICAR_NAVIOS
+                                
+                COLISION_IZQ_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia la IZQUIERDA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    DEC BX                      ;Mueve el indice hacia la IZQUIERDA
+                    LOOP COLISION_IZQ_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
+                    
+                    MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
+                        
+                    RESTAR_PORT_POS_X:          ;Si no colisiona, se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'P'
+                        DEC SI
+                        LOOP RESTAR_PORT_POS_X
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2)
+                        JMP UBICAR_NAVIOS
+                                
+            UBICAR_PORT_V:      ;Ubica un PORTAVIONES verticalmente
+                MOV AX, SI
+                MOV BX, 6
+                DIV BL
+                
+                MOV BX, SI 
+                
+                ;Posiciones criticas
+                CMP AL, 1       ;CASO 3: Un PORTAVIONES solo cabe verticalmente hacia la ABAJO en las filas 0 (1) o 1 (2)
+                JLE COLISION_INF_PORT   ;Verifica colisiones antes de ubicarlo
+                
+                CMP AL, 4       ;CASO 4: Un PORTAVIONES solo cabe verticalmente hacia la ARRIBA en las filas 4 (5) o 5 (6)
+                JGE COLISION_SUP_PORT   ;Verifica colisiones antes de ubicarlo
+                
+                JMP UBICAR_PORTAVIONES  ;Si el PORTAVIONES no cabe verticalmente hacia arriba/abajo salta al inicio del bloque para generar nueva posicion aleatoria
+                
+                COLISION_INF_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia ABAJO
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    ADD BX, 6                   ;Mueve el indice hacia la ABAJO
+                    LOOP COLISION_INF_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
+                    
+                    MOV CX, TAM_PORT 
+                        
+                    SUMAR_PORT_POS_Y:           ;Si no colisiona, se ubica hacia la ABAJO, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'P'
+                        ADD SI, 6
+                        LOOP SUMAR_PORT_POS_Y
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2)
+                        JMP UBICAR_NAVIOS
+                
+                COLISION_SUP_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia ARRIBA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    SUB BX, 6                   ;Mueve el indice hacia la ARRIBA
+                    LOOP COLISION_SUP_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES 
+                    
+                    MOV CX, TAM_PORT 
+                        
+                    RESTAR_PORT_POS_Y:          ;Si no colisiona, se ubica hacia la ARRIBA, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'P'
+                        SUB SI, 6
+                        LOOP RESTAR_PORT_POS_Y
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2) 
+                        JMP UBICAR_NAVIOS
+                        
+        UBICAR_CRUCERO:     ;Ubica un CRUCERO de manera horizontal o vertical
+            CALL GEN_POS_ALEA       ;Genera posicion aleatoria para ubicar un CRUCERO (el resultado se almacena en el registro BX)
+            
+            CALL DIRECCION_NAVIO    ;Determina la direccion del CRUCERO (horizonal o vertical)
+        
+            MOV SI, BX          ;Copia la posicion inicial del CRUCERO en el registro SI
+            
+            MOV CX, TAM_CRUC
+            
+            CMP HFLAG, 1
+            JE  UBICAR_CRUC_H
+            JNE UBICAR_CRUC_V
+            
+            UBICAR_CRUC_H:      ;Ubica un CRUCERO horizontalmente
+                MOV AX, SI
+                MOV BX, 6
+                DIV BL 
+                
+                MOV BX, SI
+                
+                ;Posiciones criticas
+                CMP AH, 2       ;CASO 1: Un CRUCERO solo cabe horizontalmente hacia la DERECHA en las columnas 0 (A), 1 (B) o 2 (C)
+                JLE COLISION_DER_CRUC
+                
+                CMP AH, 3       ;CASO 2: Un CRUCERO solo cabe horizontalmente hacia la IZQUIERDA en las columnas 3 (D), 4 (E) o 5 (F)
+                JGE COLISION_IZQ_CRUC
+                
+                JMP UBICAR_CRUCERO      ;Si el CRUCERO no cabe horizontalmente hacia los lados salta al inicio del bloque para generar nueva posicion aleatoria
+                
+                COLISION_DER_CRUC:              ;Antes de ubicarlo, verifica si el CRUCERO va a colisionar con otro navio hacia la DERECHA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_CRUCERO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    INC BX                      ;Mueve el indice hacia la DERECHA
+                    LOOP COLISION_DER_CRUC      ;Verifica para todas las celdas que ocupa el CRUCERO
+                    
+                    MOV CX, TAM_CRUC            ;El CRUCERO ocupa 4 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
+                        
+                    SUMAR_CRUC_POS_X:           ;Si no colisiona, se ubica hacia la DERECHA, en la posicion aleatoria generada 
+                        MOV TABLERO_REAL[SI], 'C'
+                        INC SI
+                        LOOP SUMAR_CRUC_POS_X
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2) 
+                        JMP UBICAR_NAVIOS
+                
+                COLISION_IZQ_CRUC:              ;Antes de ubicarlo, verifica si el CRUCERO va a colisionar con otro navio hacia la IZQUIERDA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_CRUCERO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    DEC BX                      ;Mueve el indice hacia la IZQUIERDA
+                    LOOP COLISION_IZQ_CRUC      ;Verifica para todas las celdas que ocupa el CRUCERO
+                    
+                    MOV CX, TAM_CRUC            ;El CRUCERO ocupa 4 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
+                        
+                    RESTAR_CRUC_POS_X:          ;Si no colisiona, se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'C'
+                        DEC SI
+                        LOOP RESTAR_CRUC_POS_X
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2)
+                        JMP UBICAR_NAVIOS
+                                
+            UBICAR_CRUC_V:      ;Ubica un CRUCERO verticalmente
+                MOV AX, SI
+                MOV BX, 6
+                DIV BL
+                
+                MOV BX, SI 
+                
+                ;Posiciones criticas
+                CMP AL, 2       ;CASO 3: Un CRUCERO solo cabe verticalmente hacia la ABAJO en las filas 0 (A), 1 (B) o 2 (C)
+                JLE COLISION_INF_CRUC   ;Verifica colisiones antes de ubicarlo
+                
+                CMP AL, 3       ;CASO 4: Un CRUCERO solo cabe verticalmente hacia la ARRIBA en las filas 3 (D), 4 (E) o 5 (F)
+                JGE COLISION_SUP_CRUC   ;Verifica colisiones antes de ubicarlo
+                
+                JMP UBICAR_CRUCERO    ;Si el CRUCERO no cabe verticalmente hacia arriba/abajo salta al inicio del bloque para generar nueva posicion aleatoria
+                
+                COLISION_INF_CRUC:              ;Antes de ubicarlo, verifica si el CRUCERO va a colisionar con otro navio hacia ABAJO
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_CRUCERO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    ADD BX, 6                   ;Mueve el indice hacia la ABAJO
+                    LOOP COLISION_INF_CRUC      ;Verifica para todas las celdas que ocupa el CRUCERO
+                    
+                    MOV CX, TAM_CRUC 
+                        
+                    SUMAR_CRUC_POS_Y:           ;Si no colisiona, se ubica hacia la ABAJO, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'C'
+                        ADD SI, 6
+                        LOOP SUMAR_CRUC_POS_Y
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2)
+                        JMP UBICAR_NAVIOS
+                
+                COLISION_SUP_CRUC:              ;Antes de ubicarlo, verifica si el CRUCERO va a colisionar con otro navio hacia ARRIBA
+                    CMP TABLERO_REAL[BX], '0'
+                    JNE UBICAR_CRUCERO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    SUB BX, 6                   ;Mueve el indice hacia la ARRIBA
+                    LOOP COLISION_SUP_CRUC      ;Verifica para todas las celdas que ocupa el CRUCERO 
+                    
+                    MOV CX, TAM_CRUC 
+                        
+                    RESTAR_CRUC_POS_Y:          ;Si no colisiona, se ubica hacia la ARRIBA, en la posicion aleatoria generada
+                        MOV TABLERO_REAL[SI], 'C'
+                        SUB SI, 6
+                        LOOP RESTAR_CRUC_POS_Y
+                        
+                        DEC DI      ;Reduce el contador para ubicar navios (MAXIMO: 2) 
+                        JMP UBICAR_NAVIOS
+        
+    UBICAR_SUBMARINO:
+        CALL GEN_POS_ALEA       ;Genera posicion aleatoria para ubicar SUBMARINO (el resultado se almacena en el registro BX)    
     
-    ;LOGICA DE UBICAR NAVIOS (2 PORTAVIONES || 2 CRUCEROS || 1 PORTAVIONES + 1 CRUCERO)
-       
-       
-       
-    
-    ;Si la posicion ya esta tomada regresar al parangari del bloque para buscar otra
-    ;CMP TABLERO_REAL[BX], '1'
-    ;JE UBICAR_FLOTA   
-    ;MOV TABLERO_REAL[BX], '1'
-    
+        CALL DIRECCION_NAVIO    ;Determina la direccion del SUBMARINO (horizonal o vertical)
 
+        MOV SI, BX          ;Copia la posicion inicial del SUBMARINO en el registro SI
+        
+        MOV CX, TAM_SUBM    ;El SUBMARINO ocupa 3 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle)
+        
+        CMP HFLAG, 1
+        JE  UBICAR_SUBM_H
+        JNE UBICAR_SUBM_V
+        
+        UBICAR_SUBM_H:
+            MOV AX, BX
+            MOV BX, 6
+            DIV BL
+            
+            MOV BX, SI
+            
+            ;Posiciones criticas
+            CMP AH, 3       ;CASO 1: Un SUBMARINO solo cabe horizontalmente hacia la DERECHA en las columnas 0 (A), 1 (B), 2 (C) o 3 (D)
+            JLE COLISION_DER_SUBM
+            
+            CMP AH, 2       ;CASO 2: Un SUBMARINO solo cabe horizontalmente hacia la IZQUIERDA en las columnas 2 (C), 3 (D), 4 (E) o 5 (F)
+            JGE COLISION_IZQ_SUBM
+            
+            JMP UBICAR_SUBMARINO      ;Si el SUBMARINO no cabe horizontalmente hacia los lados salta al inicio del bloque para generar nueva posicion aleatoria
+            
+            COLISION_DER_SUBM:              ;Antes de ubicarlo, verifica si el SUBMARINO va a colisionar con otro navio hacia la DERECHA
+                CMP TABLERO_REAL[BX], '0'
+                JNE UBICAR_SUBMARINO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                INC BX                      ;Mueve el indice hacia la DERECHA
+                LOOP COLISION_DER_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO
+                
+                MOV CX, TAM_SUBM
+            
+                SUMAR_SUBM_POS_X:
+                    MOV TABLERO_REAL[SI], 'S'
+                    INC SI
+                    LOOP SUMAR_SUBM_POS_X
+                    JMP MOSTRAR_TABLERO_JUGADOR
+                    
+            COLISION_IZQ_SUBM:              ;Antes de ubicarlo, verifica si el SUBMARINO va a colisionar con otro navio hacia la DERECHA
+                CMP TABLERO_REAL[BX], '0'
+                JNE UBICAR_SUBMARINO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                DEC BX                      ;Mueve el indice hacia la DERECHA
+                LOOP COLISION_DER_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO
+                
+                MOV CX, TAM_SUBM
+                
+                RESTAR_SUBM_POS_X:
+                    MOV TABLERO_REAL[SI], 'S'
+                    DEC SI
+                    LOOP RESTAR_SUBM_POS_X
+                    JMP MOSTRAR_TABLERO_JUGADOR
+                            
+        UBICAR_SUBM_V:
+            MOV AX, BX
+            MOV BX, 6
+            DIV BL
+            
+            MOV BX, SI
+            
+            ;Posiciones criticas
+            CMP AL, 3       ;CASO 3: Un SUBMARINO solo cabe verticalmente hacia la ABAJO en las filas 0 (A), 1 (B) o 2 (C)
+            JLE COLISION_INF_SUBM   ;Verifica colisiones antes de ubicarlo
+            
+            CMP AL, 2       ;CASO 4: Un SUBMARINO solo cabe verticalmente hacia la ARRIBA en las filas 3 (D), 4 (E) o 5 (F)
+            JGE COLISION_SUP_SUBM   ;Verifica colisiones antes de ubicarlo
+            
+            JMP UBICAR_SUBMARINO      ;Si el SUBMARINO no cabe verticalmente hacia arriba/abajo salta al inicio del bloque para generar nueva posicion aleatoria
+            
+            COLISION_INF_SUBM:              ;Antes de ubicarlo, verifica si el SUBMARINO va a colisionar con otro navio hacia ABAJO
+                CMP TABLERO_REAL[BX], '0'
+                JNE UBICAR_SUBMARINO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                ADD BX, 6                   ;Mueve el indice hacia la ABAJO
+                LOOP COLISION_INF_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO
+                
+                MOV CX, TAM_SUBM
+                
+                SUMAR_SUBM_POS_Y:
+                    MOV TABLERO_REAL[SI], 'S'
+                    ADD SI, 6
+                    LOOP SUMAR_SUBM_POS_Y
+                    JMP  MOSTRAR_TABLERO_JUGADOR 
+                    
+            COLISION_SUP_SUBM:              ;Antes de ubicarlo, verifica si el SUBMARINO va a colisionar con otro navio hacia ARRIBA
+                CMP TABLERO_REAL[BX], '0'
+                JNE UBICAR_SUBMARINO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                SUB BX, 6                   ;Mueve el indice hacia la ARRIBA
+                LOOP COLISION_SUP_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO 
+                
+                MOV CX, TAM_SUBM
+                
+                RESTAR_SUBM_POS_Y:
+                    MOV TABLERO_REAL[SI], 'S'
+                    SUB SI, 6
+                    LOOP RESTAR_SUBM_POS_Y
+                    JMP  MOSTRAR_TABLERO_JUGADOR
+                    
+                    
 MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
      
 ;    ;Limpia la consola
@@ -424,7 +661,7 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
 ;    MOV AL, 03h
 ;    INT 10h 
     
-    ;Muestra las letras de las columnas de la matriz
+;    ;Muestra las letras de las columnas de la matriz
 ;    MOV AH, 09h 
 ;    LEA DX, L_SUPERIOR_MATRIZ    
 ;    INT 21h 
@@ -925,11 +1162,16 @@ LANZAMIENTOS_REALIZADOS DB 8 DUP(50)    ;CAMBIAR A 7 DUP(50)           ;7 POSIBL
 AUX DW 0
     
 ;UBICACION MENU
-NUM_MENU DB "1$"
+NUM_MENU DB "1$" 
 
 ;BANDERAS HORIZONTAL/VERTICAL
 HFLAG DB 0
-VFLAG DB 0
+
+;LONGITUD DE LOS NAVIOS (NUMERO DE CELDAS QUE OCUPA CADA NAVIO
+TAM_SUBM DW 3
+TAM_CRUC DW 4
+TAM_PORT DW 5
+
       
 ;CARTEL DE BIENVENIDA
 BV1 DB 13, 2 DUP(10), 8 DUP(32), 63 DUP(176), 10, "$" 
@@ -964,9 +1206,9 @@ MSJ_ERR2 DB 9, "Intenta de nuevo. (Presiona cualquier tecla para continuar.)  $"
 
 
 ;REGLAS DEL JUEGO
-MAN1  DB 13, 1 DUP(10), 29 DUP(32), 201, 20 DUP(205), 187, 10, "$"
-MAN2  DB 13, 201, 28 DUP(205), 185, "  REGLAS DEL JUEGO  ", 204, 28 DUP(205), 187, "$"
-MAN3  DB 13, 186, 28 DUP(32), 200, 20 DUP(205), 188, 28 DUP(32), 186, "$"
+MAN1  DB 13, 2 DUP(10), 25 DUP(32), 201, 28 DUP(205), 187, 10, "$"
+MAN2  DB 13, 201, 28 DUP(205), 185, "  REGLAS DEL JUEGO  ", 204, 28 DUP(205), 187, 10, "$"
+MAN3  DB 13, 186, 24 DUP(32), 200, 28 DUP(205), 188, 24 DUP(32), 186, "$"
 MAN4  DB 186, "  Batalla naval es un juego de mesa para dos jugadores, en el cual ambos      ", 186, "$"
 MAN5  DB 186, "  tienen que intentar adivinar en qu", 130, " celdas est", 160, "n los nav", 161, "os del ememigo.    ", 186, "$"
 MAN6  DB 186, "  El objetivo es derribar los nav", 161, "os del enemigo y gana quien logre derribar  ", 186, "$"
@@ -1032,7 +1274,7 @@ AYUDA DB 10, 13, 9, "Acertaste = X  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
 ;MENSAJE DE MISILES (INTENTOS) RESTANTES
 MSJ_NUM_MISILES DB 13, 9, "Misiles (intentos) restantes: $"
 ;CONTADOR DE NUMERO DE MISILES (INTENTOS) DEL JUGADOR
-NUM_MISILES DB 20        ;CAMBIAR    NUM_MISILES DB "8$"
+NUM_MISILES DB 20       ;DESCOMPONER Y CONVERTIR NUMERO PARA MOSTRAR EN CONSOLA
 ;CONTADOR PARA NAVIOS QUE JUGADOR LOGRO IMPACTAR
 NAV_IMP DB "0$"
 
@@ -1062,7 +1304,7 @@ OPC_SI DB 13, 9, "1. Si!", 10, "$"
 OPC_NO DB 13, 9, "2. No!", 10, "$"
 
 
-;FELICITACIONES!
+;FELICITACIONES
 FEL1 DB 2 DUP(10), 13, 7 DUP(32), 201, 64 DUP(205), 187, 10, "$"
 FEL2 DB 13, 7 DUP(32),  186, "  ___ ___ _    ___ ___ ___ _____ _   ___ ___ ___  _  _ ___ ___  ", 186, 10, "$"    
 FEL3 DB 13, 7 DUP(32),  186, " | __| __| |  |_ _/ __|_ _|_   _/_\ / __|_ _/ _ \| \| | __/ __| ", 186, 10, "$"
@@ -1082,7 +1324,7 @@ GANADOR3  DB 13, 6 DUP(32), 192, 66 DUP(196), 217, 3 DUP(10), "$"
 ;|*****************************************|                         
 ;-------------------------------------------
 
-;PROCEDIMIENTO PARA IMPRIMIR UN SALTO DE LINEA
+;IMPRIMIE UN SALTO DE LINEA EN LA CONSOLA
 PRINT_SDL PROC
     
     MOV AH, 09h
@@ -1094,7 +1336,7 @@ PRINT_SDL PROC
 PRINT_SDL ENDP
             
 
-;PROCEDIMIENTO PARA GENERAR UNA POSICION ALEATORIA EN EL TABLERO (EL RESULTADO SE GUARDA BX)
+;GENERA UNA POSICION ALEATORIA EN EL TABLERO (EL RESULTADO SE GUARDA EN EL REGISTRO BX)
 GEN_POS_ALEA PROC
     
     ;Interrupcion 21h/2Ch guarda el tiempo en los registros CX y DX
@@ -1118,6 +1360,7 @@ GEN_POS_ALEA PROC
 GEN_POS_ALEA ENDP
 
 
+;ELIGE ALEATORIAMENTE LA POSICION DEL NAVIO (HORIZONAL O VERTICAL) [NOTA: SI HFLAG == 1 ENTONCES YA NO ES VERTICAL]
 DIRECCION_NAVIO PROC
 
     MOV DX, 00h
@@ -1134,14 +1377,12 @@ DIRECCION_NAVIO PROC
     
     HORIZONTAL:
         MOV HFLAG, 1
-        MOV VFLAG, 0 
-        JMP SALTO
+        JMP RETORNAR
    
     VERTICAL:
         MOV HFLAG, 0
-        MOV VFLAG, 1 
-    
-    SALTO:
+        
+    RETORNAR:
         RET
 
 DIRECCION_NAVIO ENDP
