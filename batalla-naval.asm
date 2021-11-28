@@ -303,10 +303,10 @@ PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador
         INC SI     
         LOOP REINICIAR_TABLERO_JUGADOR      ;Bucle para llenar las filas con caracter ASCII 250
                         
-    ;Limpia la consola (preparar para mostrar tablero de juego
-    MOV AH, 00h
-    MOV AL, 03h
-    INT 10h
+;    ;Limpia la consola (preparar para mostrar tablero de juego
+;    MOV AH, 00h
+;    MOV AL, 03h
+;    INT 10h
    
     MOV SI, 0     ;Encera registro SI para recorrer arreglo LETRAS[SI] 
      
@@ -474,7 +474,7 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                 
                 COLISION_DER_CRUC:              ;Antes de ubicarlo, verifica si el CRUCERO va a colisionar con otro navio hacia la DERECHA
                     CMP TABLERO_REAL[BX], '0'
-                    JNE UBICAR_CRUCERO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
+                    JNE UBICAR_CRUCERO          ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
                     INC BX                      ;Mueve el indice hacia la DERECHA
                     LOOP COLISION_DER_CRUC      ;Verifica para todas las celdas que ocupa el CRUCERO
                     
@@ -656,10 +656,10 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
 MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
      
-;    ;Limpia la consola
-;    MOV AH, 00h
-;    MOV AL, 03h
-;    INT 10h 
+    ;Limpia la consola
+    MOV AH, 00h
+    MOV AL, 03h
+    INT 10h 
     
 ;    ;Muestra las letras de las columnas de la matriz
 ;    MOV AH, 09h 
@@ -742,13 +742,13 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
         CMP DI, 5       ;Repite el proceso 6 veces (matriz 6x6)     ;CAMBIAR A 5  (MATRIZ 5x5)
         JLE NUM_FILA
        
-        CMP [NUM_MISILES], '0'
-        JE FINAL_PARTIDA        ;Si la variable NUM_MISILES == 0 entonces ya no hay mas misiles (intentos) disponibles y el juego acaba
+        CMP NUM_MISILES, 0
+        JE  FINAL_PARTIDA       ;Si la variable NUM_MISILES == 0 entonces ya no hay mas misiles (intentos) disponibles y el juego acaba
        
-        JMP JUEGO               ;Si la variable NUM_MISILES > 0 aun hay misiles (intentos) disponibles para jugar
+        JMP INFO_PARTIDA        ;Si la variable NUM_MISILES > 0 aun hay misiles (intentos) disponibles para jugar
 
 
-JUEGO:      ;Bloque para pedirle al jugador los datos de su jugada
+INFO_PARTIDA:       ;Bloque para pedir al jugador los datos de su jugada
     
     ;Muestra en consola la guia del juego   
     MOV AH, 09h
@@ -760,29 +760,53 @@ JUEGO:      ;Bloque para pedirle al jugador los datos de su jugada
     LEA DX, MSJ_NUM_MISILES
     INT 21h
     
-    ;Muestra en consola numero de misiles disponibles
-    MOV AH, 02h     ;CAMBIAR    MOV AH, 09h     (Quiza no funcione asi qu mejor descomponer el valor de 2 digitos y luego mostrarlo uno por uno
-    MOV DL, [NUM_MISILES]  ;Numero de misiles disponibles       ;CAMBIAR MOV DX, [NUM_MISILES]  (Leer comentario de arriba)
-    INT 21h
-
+    MOV AX, NUM_MISILES
+    MOV CX, 0
+    
+    DESCOMPONER_NUM_MISILES:    ;Descompone los digitos de la variable NUM_MISILES
+        MOV BX, 10
+        DIV BL          ;Divide numero de misiles para 10
+        MOV DX, AX
+        MOV AH, 0       
+        MOV AL, DH      ;Guarda el residuo (segundo digito) en AL
+        PUSH AX         ;Coloca en la pila residuo (segundo digito)
+        MOV AX, 0
+        MOV AL, DL      ;Guarda el cociente (primer digito) en AL
+        INC CX
+        CMP DL, 0       ;Verifica si el cociente es cero
+        JNZ DESCOMPONER_NUM_MISILES     ;Si el cociente no es cero aun hay digitos para mostrar y salta al inicio del bloque para repetir el proceso
+        JZ CONVERTIR_NUM_MISILES        ;Si el cociente es cero ya no hay mas digitos para mostrar
+        
+    CONVERTIR_NUM_MISILES:
+        SUB CX, 1
+        POP AX
+        MOV AH, 02h
+        MOV DX, AX
+        ADD DX, 30h     ;Se suma 30 hexadecimal al numero para convertiro en caracter ASCII
+        INT 21h
+        CMP CX, 0
+        JNZ CONVERTIR_NUM_MISILES
+    
 
 POSICION_X:         ;EJE "X"
-    
-    ;Muestra en consola mensaje: "COLUMNA [A-F]: "   
+
     MOV AH, 09h
-    LEA DX, X
+    LEA DX, MSJ_COORDS_ATAQUE
+    INT 21h
+    
+    MOV AH, 09h
+    LEA DX, MSJ_OP
     INT 21h
     
     ;Pide letra de columna a jugador
-    MOV AX, 00h
-    MOV AH, 01h
-    INT 21h
+    MOV AX, 00h     ;Reinicia registro
+    MOV AH, 01h     
+    INT 21h         ;Interrupcion para pedir un caracter (resultado se almacena en registro AL)
     
     MOV SI, 0       ;Reinicia registro SI para usarlo como indice y recorrer arreglo LETRAS
-    MOV CX, 6       ;CAMBIAR A 5 (ORIGINAL)            ;CAMBIAR A 12 ( 12 posibles letras = [A, B, C, D, E, f, a, b, c, e, d, f] )
+    MOV CX, 12      ;CAMBIAR A 5 (ORIGINAL)            
     
-    
-    CMP AL, "`"     ;Caracter ASCII 96 ('a' = ASCII 97)
+    CMP AL, "`"     ;Caracter ASCII 96 (uno antes del 'a' = ASCII 97)
     JL MAYUSCULA    ;Si caracter ingresado es menor a 96 ya no puede ser minuscula
     JG MINUSCULA    ;Si caracter ingresado es mayor a 96 ya no puede ser mayuscula
  
@@ -790,10 +814,10 @@ POSICION_X:         ;EJE "X"
 MAYUSCULA:      ;Valida si el caracter ingresado esta entre 'A' y 'F' (Cambiar el rango hasta caracter 'E')
    
     CMP AL, 'A'
-    JL LANZAMIENTO_ILEGAL
+    JL DISPARO_ILEGAL
    
     CMP AL, 'F'     ;CAMBIAR A 'E' 
-    JG LANZAMIENTO_ILEGAL
+    JG DISPARO_ILEGAL
     
     JMP VERIFICAR_NUMERO
     
@@ -801,47 +825,55 @@ MAYUSCULA:      ;Valida si el caracter ingresado esta entre 'A' y 'F' (Cambiar e
 MINUSCULA:      ;Valida si el caracter ingresado esta entre 'a' y 'e' (Cambiar el rango hasta caracter 'f')
 
     CMP AL, 'a'
-    JL LANZAMIENTO_ILEGAL
+    JL DISPARO_ILEGAL
    
-    CMP AL, 'e'     ;CAMBIAR A 'f'
-    JG LANZAMIENTO_ILEGAL      
+    CMP AL, 'f'     ;CAMBIAR A 'e'
+    JG DISPARO_ILEGAL      
 
     JMP VERIFICAR_NUMERO
-  
-    
+
+
 VERIFICAR_NUMERO:       ;Verificar numero ASCII del caracter en arreglo LETRAS  
 
-    CMP AL, LETRAS[SI]
+    CMP AL, LETRAS[SI]  
     JE X1
     INC SI
-    LOOP VERIFICAR_NUMERO 
-       
+    LOOP VERIFICAR_NUMERO
     
-X1:         ;EJE "Y"
+   
+CORREGIR_EJE_X:
+
+    SUB SI, 6                                                             
+                                                             
+
+X1:         ;EJE "Y" 
+
+    CMP SI, 6
+    JGE CORREGIR_EJE_X
     
-    MOV AX, 00h
-    MOV AX, SI
-    MOV [PosX], AL     
+    MOV AX, 00h     ;Reinicia registro AX
+    MOV AX, SI      ;Guarda la posicion ingresada por el usuario en AX
+    MOV [PosX], AL  ;Guarda la posicion en el eje X
     
-    ;Muestra en consola mensaje: "FILA [1-6]: "
-    MOV AH, 09h
-    LEA DX, Y
-    INT 21h
+;    ;Muestra en consola mensaje: "FILA [1-6]: "
+;    MOV AH, 09h
+;    LEA DX, Y
+;    INT 21h
    
     ;Pide numero de fila a jugador
-    MOV AX, 00h
+    MOV AX, 00h     ;Reinicia registro AX
     MOV AH, 01h
     INT 21h
    
     ;Valida que el numero ingresado sea mayor a 1
     CMP AL, '1'
-    JL LANZAMIENTO_ILEGAL
+    JL DISPARO_ILEGAL
    
     ;Valida que el numero ingresado sea menor a 6
     CMP AL, '6'     ;CAMBIAR A 5
-    JG LANZAMIENTO_ILEGAL    
+    JG DISPARO_ILEGAL    
     
-    ;Se resta 30 hexadecimal para obtener el numero ingresado por el jugador en codigo ASCII
+    ;Se resta 30 hexadecimal para convertir el caracter ingresado de ASCII a numero hexadecimal 
     SUB AL, 30h
     ;Se registra la posicion ingresada por el jugador en PosY
     MOV [PosY], AL
@@ -857,42 +889,39 @@ X1:         ;EJE "Y"
     MOV AX, 0
     MOV AL, [PosY]
     ADD AL, [PosX]
-    MOV BX, AX      ;Copia el valor real de la matriz (AX) en BX para verificar lanzamientos ilegales 
+    MOV BX, AX      ;Copia el valor real de la matriz (AX) en BX para verificar disparos ilegales 
     
     ;Verifica que la combinacion de columna+fila no haya sido ingresada previamente
     MOV SI, 0
-    MOV CX, 8      ;19 posibles lanzamientos de misil antes de que acabe el juego       ;CAMBIAR A 7    (ORIGINAL)
+    MOV CX, 19      ;19 posibles disparos de misil antes de que acabe el juego       ;CAMBIAR A 7    (ORIGINAL)
     
     
-CMP_LANZAMIENTO:    ;Verifica que la posicion ingresada por el jugador no haya sido ingresada previamente
+CMP_DISPARO:    ;Verifica que la posicion ingresada por el jugador no haya sido ingresada previamente
      
-    ;Compara el valor copiado desde AX con los lanzamientos guardados
-    CMP BL, LANZAMIENTOS_REALIZADOS[SI]
-    JE LANZAMIENTO_ILEGAL
+    ;Compara el valor copiado desde AX con los disparos guardados
+    CMP BL, DISPAROS_REALIZADOS[SI]
+    JE DISPARO_ILEGAL
     INC SI
-    LOOP CMP_LANZAMIENTO     ;Realiza un bucle recorriendo todos los lanzamientos registrados para verificar que el jugador este realizando un lanzamiento legal
+    LOOP CMP_DISPARO     ;Realiza un bucle recorriendo todos los disparos registrados para verificar que el jugador este realizando un lanzamiento legal
     
-    ;Variable AUX contiene el indice actual del arreglo LANZAMIENTOS_REALIZADOS   
+    ;Variable AUX contiene el indice actual del arreglo DISPAROS_REALIZADOS   
     MOV SI, [AUX]
-    ;Si el lanzamiento es legal, se lo registra en LANZAMIENTOS_REALIZADOS
-    MOV LANZAMIENTOS_REALIZADOS[SI], BL
+    ;Si el lanzamiento es legal, se lo registra en DISPAROS_REALIZADOS
+    MOV DISPAROS_REALIZADOS[SI], BL
     
-    INC [AUX]       ;Se debe incrementar el indice en uno para no sobreescribir los otros lanzamientos registrados                
+    INC [AUX]       ;Se debe incrementar el indice en uno para no sobreescribir los otros disparos registrados                
     DEC [NUM_MISILES]  ;Como se registro un nuevo lanzamiento, se resta un misil disponible
     
     ;RESETEAR SALTO DE LINEA (POR ALGUNA RAZON, ESTE CAMBIA DE VALOR DURANTE LAS OPERACIONES INC Y DEC DE AUX Y NUM_MISILES)
     MOV SDL[0], 10
    
     ;Verifica si el jugador ha acertado el disparo
-    CMP TABLERO_REAL[BX], '1'
-    JE ACIERTO
-   
-    ;Verifica si el jugador ha errado el disparo
     CMP TABLERO_REAL[BX], '0'
     JE FALLO
+    JNE ACIERTO
        
  
-LANZAMIENTO_ILEGAL:     ;Verifica si el lanzamiento del jugador es legal                                   
+DISPARO_ILEGAL:     ;Verifica si el lanzamiento del jugador es legal                                   
 
     CALL PRINT_SDL
  
@@ -921,18 +950,41 @@ LANZAMIENTO_ILEGAL:     ;Verifica si el lanzamiento del jugador es legal
           
 ACIERTO:        ;Bloque para verificar si el jugador logro impactar un navio
    
-    MOV TABLERO_JUGADOR[BX], 'X'    ;Reemplaza caracter 250 de la matriz por X en la posicion indicada por el jugador
+    MOV AH, 09h
+    LEA DX, MSJ_CON_IMP
+    INT 21h
+    
+    MOV TABLERO_JUGADOR[BX], '1'    ;Reemplaza caracter 250 de la matriz por X en la posicion indicada por el jugador
    
     INC [NAV_IMP]           ;Aumenta el numero de navios impactados
-    CMP [NAV_IMP], '9'     ;Compara con condicion de victoria       ;CONDICION REAL DE VICTORIA = 3 NAVIOS HUNDIDOS     ;CAMBIAR A '5' (ORIGINAL)
+    CMP [NAV_IMP], '9'      ;Compara con condicion de victoria       ;CONDICION REAL DE VICTORIA = 3 NAVIOS HUNDIDOS     ;CAMBIAR A '5' (ORIGINAL)
     JE VICTORIA
    
+    MOV AH, 09h
+    LEA DX, CONT_IMP
+    INT 21h
+    
+    MOV AH, 01h
+    INT 21h
+    
     JMP MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
      
  
 FALLO:
    
+    MOV AH, 09h
+    LEA DX, MSJ_SIN_IMP
+    INT 21h
+    
     MOV TABLERO_JUGADOR[BX], '0'    ;Reemplaza caracter 250 de la matriz por 0 en la posicion indicada por el jugador
+    
+    MOV AH, 09h
+    LEA DX, CONT_IMP
+    INT 21h
+    
+    MOV AH, 01h
+    INT 21h
+    
     JMP MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
  
  
@@ -959,7 +1011,7 @@ MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finali
     MOV NUM_MENU, '3'
     
     ;Reinicia variables auxiliares
-    MOV [NUM_MISILES], '9'
+    MOV NUM_MISILES, 20
     MOV [NAV_IMP], '0'
     MOV [AUX], 0                                                  
     
@@ -973,14 +1025,14 @@ MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finali
         LOOP RESET_TABLERO_REAL
     
     MOV SI, 0
-    MOV CX, 8       ;CAMBIAR A 19       ;CAMBIAR A 7    (ORIGINAL)
+    MOV CX, 19       ;CAMBIAR A 7
     
     JMP RESET_JUEGO   
 
 
 RESET_JUEGO: 
     
-    MOV LANZAMIENTOS_REALIZADOS[SI], 50
+    MOV DISPAROS_REALIZADOS[SI], 0
     INC SI
     LOOP RESET_JUEGO
     
@@ -1011,7 +1063,7 @@ RESET_JUEGO:
     JE PREPARAR_TABLERO_JUGADOR
    
     CMP AL, '2' 
-    JE BIENVENIDA
+    JE SALIR_JUEGO
     JG OP_INC
       
        
@@ -1153,10 +1205,10 @@ SALIR_JUEGO:    ;Bloque para salir del juego
 SDL DB 10, 13, "$"
 
 ;ARREGLO PARA COMPARAR LAS OPCIONES VALIDAS
-LETRAS DB 'A', 'B', 'C', 'D', 'E', 'F'       ;, 'a', 'b', 'c', 'd', 'e', 'f'    ;AGREGAR DESPUES
+LETRAS DB 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'    
 
 ;ARREGLO PARA ALMACENAR LA POSICION DE DISPAROS REALIZADOS
-LANZAMIENTOS_REALIZADOS DB 8 DUP(50)    ;CAMBIAR A 7 DUP(50)           ;7 POSIBLES DISPAROS ANTES DE FINALIZAR EL JUEGO
+DISPAROS_REALIZADOS DB 19 DUP(50)    ;CAMBIAR A 7 DUP(50)           ;7 POSIBLES DISPAROS ANTES DE FINALIZAR EL JUEGO
 
 ;VARIABLE AUXILIAR
 AUX DW 0
@@ -1274,11 +1326,12 @@ AYUDA DB 10, 13, 9, "Acertaste = X  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
 ;MENSAJE DE MISILES (INTENTOS) RESTANTES
 MSJ_NUM_MISILES DB 13, 9, "Misiles (intentos) restantes: $"
 ;CONTADOR DE NUMERO DE MISILES (INTENTOS) DEL JUGADOR
-NUM_MISILES DB 20       ;DESCOMPONER Y CONVERTIR NUMERO PARA MOSTRAR EN CONSOLA
+NUM_MISILES DW 20       ;DESCOMPONER Y CONVERTIR NUMERO PARA MOSTRAR EN CONSOLA
 ;CONTADOR PARA NAVIOS QUE JUGADOR LOGRO IMPACTAR
 NAV_IMP DB "0$"
-
-;CAMBIAR A UN SOLO DATO DE ENTRADA PARA LUEGO DESCOMPONER LA POSICION
+                                                                     
+;MENSAJE COORDENADAS DE ATAQUE
+MSJ_COORDS_ATAQUE DB 2 DUP(10), 13, 9, "Ingresa la celda que quieres atacar (ejemplo: A5) $"
 ;POSICION 'X' INGRESADA POR JUGADOR
 X DB 10, 13, 9, "COLUMNA [A-F]: $"
 ;POSICION 'Y' INGRESADA POR JUGADOR
@@ -1292,6 +1345,12 @@ PosY DB 0
 ;MENSAJE DE POSICION INCORRECTA
 POS_INV1 DB 10, 13, 9, 173, "Posici", 162, "n inv", 160, "lida! (presiona cualquier tecla", 10, "$"
 POS_INV2 DB 13, 9, "para continuar)  $"
+
+
+;MENSAJES DE IMPACTO DE MISIL
+MSJ_CON_IMP DB 2 DUP(10), 13, 9, "Impacto confirmado! $"
+MSJ_SIN_IMP DB 2 DUP(10), 13, 9, "Sin impacto... $"
+CONT_IMP DB 10, 13, 9, "(Presiona cualquier tecla para continuar) $"
 
  
 ;RESUMEN DE PARTIDA
