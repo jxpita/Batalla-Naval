@@ -3,7 +3,7 @@ TITLE BATALLA_NAVAL
 ORG 100h 
 
 
-
+JMP UBICAR_FLOTA
 BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
 
     ;Coloca la consola en modo video (80x25)
@@ -599,7 +599,7 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                 CMP TABLERO_REAL[BX], '0'
                 JNE UBICAR_SUBMARINO           ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
                 DEC BX                      ;Mueve el indice hacia la DERECHA
-                LOOP COLISION_DER_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO
+                LOOP COLISION_IZQ_SUBM      ;Verifica para todas las celdas que ocupa el SUBMARINO
                 
                 MOV CX, TAM_SUBM
                 
