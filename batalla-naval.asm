@@ -1632,8 +1632,8 @@ IMP2 DB " nav", 161, "o(s) ...", 3 DUP(10), "$"
 
 ;TERCER MENU (DESPUES DE FINALIZAR PARTIDA)
 QJDN DB 13, 168, "Quieres jugar de nuevo?", 2 DUP(10), "$"
-OPC_SI DB 13, 9, "1. Si!", 10, "$"
-OPC_NO DB 13, 9, "2. No!", 10, "$"
+OPC_SI DB 13, 9, "1. ", 173, "Si!", 10, "$"
+OPC_NO DB 13, 9, "2. ", 173, "No!", 10, "$"
 
 ;CUARTO MENU (DESPUES DE FINALIZAR PARTIDA EN MODO DE PRUEBA)
 OPC_SALIR_MDP   DB 13, 9, "1. Salir del modo de prueba", 10, "$"
