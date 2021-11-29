@@ -30,28 +30,19 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 <br/>
 
-### Opción 1: _Jugar_
+### Opción 2: _Jugar en Modo de Prueba_
 * __Juego en Progreso__
-
-<br/>
-
-**Pendiente añadir captura**
+![image](https://user-images.githubusercontent.com/34144827/143943463-7a99ada5-0dd2-4d03-90a0-497dd6e1607f.png)
 
 <br/>
 
 * __Juego Perdido__
-
-<br/>
-
-**Pendiente añadir captura**
+![image](https://user-images.githubusercontent.com/34144827/143943235-ab01af37-a9f7-4665-937f-d317d9a741d1.png)
 
 <br/>
 
 * __Juego Ganado__
-
-<br/>
-
-**Pendiente añadir captura**
+![image](https://user-images.githubusercontent.com/34144827/143943719-37687394-e36d-41ae-8042-a0ee5b62c982.png)
 
 <br/>
 
