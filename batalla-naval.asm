@@ -234,7 +234,7 @@ OP_INC:         ;Opcion incorrecta
     MOV BX, 0
     MOV CX, 0
     MOV DX, 0
-    LEA DX, [PTPC]
+    LEA DX, PTPC
     INT 21h
     
     MOV AH, 01h
@@ -1015,12 +1015,12 @@ CMP_DISPARO:    ;Verifica que la posicion ingresada por el jugador no haya sido 
     LOOP CMP_DISPARO     ;Realiza un bucle recorriendo todos los disparos registrados para verificar que el jugador este realizando un lanzamiento legal
     
     ;Variable AUX contiene el indice actual del arreglo DISPAROS_REALIZADOS   
-    MOV SI, [AUX]
+    MOV SI, AUX
     ;Si el lanzamiento es legal, se lo registra en DISPAROS_REALIZADOS
     MOV DISPAROS_REALIZADOS[SI], BL
     
-    INC [AUX]       ;Se debe incrementar el indice en uno para no sobreescribir los otros disparos registrados                
-    DEC [NUM_MISILES]  ;Como se registro un nuevo lanzamiento, se resta un misil disponible
+    INC AUX             ;Se debe incrementar el indice en uno para no sobreescribir los otros disparos registrados                
+    DEC NUM_MISILES     ;Como se registro un nuevo lanzamiento, se resta un misil disponible
        
     ;Verifica si el jugador ha acertado o errado el disparo
     CMP TABLERO_REAL[BX], '0'
@@ -1244,7 +1244,7 @@ FINAL_PARTIDA:
 RESET_VARS:     ;Reinicia variables auxiliares
     MOV NUM_MISILES, 20
     MOV [NAV_IMP]  , '0'
-    MOV [AUX]       , 0
+    MOV AUX         , 0
     MOV SUBM_IMP    , 0
     MOV CRUC_MAY_IMP, 0
     MOV CRUC_MIN_IMP, 0
@@ -1584,13 +1584,13 @@ TABLERO_JUGADOR DB 36 DUP(250)  ;TABLERO_JUGADOR DB 25 DUP(250) (ORIGINAL)
 
 
 ;MENSAJE DE AYUDA PARA EL JUGADOR
-AYUDA DB 2 DUP(10), 13, 9, "Acertaste = 1  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
+AYUDA DB 2 DUP(10), 13, 9, "Acertaste = 1  ", 4 DUP(219), "  0 = Fallaste$"
 ;MENSAJE DE NAVIOS HUNDIDOS:
-MSJ_NAV_HUNDIDOS DB 13, 9, "Nav", 161, "os hundidos: $"
+MSJ_NAV_HUNDIDOS DB 10, 13, 9, "Nav", 161, "os hundidos: $"
 ;CONTADOR PARA NAVIOS QUE JUGADOR LOGRO IMPACTAR
 NAV_IMP DB "0$"
 ;MENSAJE DE MISILES (INTENTOS) RESTANTES
-MSJ_NUM_MISILES DB 13, 9, "Misiles (intentos) restantes: $"
+MSJ_NUM_MISILES DB 10, 13, 9, "Misiles (intentos) restantes: $"
 ;CONTADOR DE NUMERO DE MISILES (INTENTOS) DEL JUGADOR
 NUM_MISILES DW 20       ;DESCOMPONER Y CONVERTIR NUMERO PARA MOSTRAR EN CONSOLA
                                                                      
