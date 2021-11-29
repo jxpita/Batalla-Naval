@@ -4,7 +4,9 @@ ORG 100h
 
 
 
-BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
+BIENVENIDA:     ;Cartel de bienvenida y nombre del juego 
+
+
 
     ;Coloca la consola en modo video (80x25)
     MOV AH, 00h
@@ -246,6 +248,54 @@ MENU2:      ;Bloque correspondiente al segundo menu, mostrado despues del manual
     
 
 PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador 
+
+    MOV AH, 00h
+    MOV AL, 03h
+    INT 10h
+    
+    MOV AH, 09h
+    
+    LEA DX, MSJCRG 
+    INT 21H 
+    
+    
+    LEA DX, BARCO1 
+    INT 21H
+    LEA DX, BARCO2 
+    INT 21H
+    LEA DX, BARCO3 
+    INT 21H
+    LEA DX, BARCO4 
+    INT 21H
+    LEA DX, BARCO5 
+    INT 21H  
+    LEA DX, BARCO14 
+    INT 21H 
+    
+    
+    LEA DX, BARCO6 
+    INT 21H
+    LEA DX, BARCO7 
+    INT 21H
+    LEA DX, BARCO8 
+    INT 21H
+    LEA DX, BARCO9 
+    INT 21H
+    LEA DX, BARCO10 
+    INT 21H        
+    LEA DX, BARCO11 
+    INT 21H
+    LEA DX, BARCO12 
+    INT 21H
+    LEA DX, BARCO13 
+    INT 21H
+  
+
+    
+    
+
+    
+
 
     MOV SI, 0
     MOV CX, 36
@@ -1402,8 +1452,32 @@ MAN21   DB 186, "  SUBMARINO (3 celdas).                                        
 MAN22   DB 200, 78 DUP(205), 188, 10, "$"
 ESP_MAN DB 13, 186, 78 DUP(32), 186, "$"
 
+
+
 ;?Que quieres hacer ahora?   
-QQHA DB 10, 13, 168, "Qu", 130, " quieres hacer ahora?", 2 DUP(10), 13, "$"
+QQHA DB 10, 13, 168, "Qu", 130, " quieres hacer ahora?", 2 DUP(10), 13, "$" 
+
+;BARCOS PARA UBICAR EN PANTALLA DE CARGA
+
+MSJCRG DB 10,10,"C A R G A N D O____P O S I C I O N E S____A L E A T O R I A S ", 10,10,10, "$" 
+
+BARCO1 DB 13, 5 DUP(32), "~~~",186,"~~~~~~ ", 10, "$"
+BARCO2 DB 13, 5 DUP(32), "~~",178,186,"~~~~~~", 10, "$"
+BARCO3 DB 13, 5 DUP(32), "~",178,178,186,"~~~~~~", 10, "$" 
+BARCO4 DB 13, 5 DUP(32), 178,178,178,186,"~~~~~~", 10, "$"
+BARCO5 DB 13, 5 DUP(32), 223,9 DUP(219),223,"~~", 10, "$"
+BARCO14 DB 13, 5 DUP(32), 10 DUP(126),10, "$"
+
+BARCO6 DB 13,10,10,10, 10 DUP(32), 7 DUP(196),201,205,46,3,46,9 DUP(205),187, 10, "$" 
+BARCO7 DB 13, 10 DUP(32), 7 DUP(196), 186, " NO CUENTES",10, "$"
+BARCO8 DB 13,10 DUP(32), 6 DUP(196), 177, 186, "LOS DIAS $",10,"$"
+BARCO9 DB 13,10 DUP(32), 5 DUP(196), 177,177,186, "HAZ QUE LOS ",10, "$"
+BARCO10 DB 13, 10 DUP(32), 3 DUP(196), 177,177,177,177, 186, "DIAS CUENTEN",10, "$"
+BARCO11 DB 13,10 DUP(32), DUP(196), 6 DUP(177), 200, 10 DUP(205),3,2 DUP(205),188,10, "$"
+BARCO12 DB 13, 10 DUP(32), 223, 19 DUP(219), 223,10, "$"
+BARCO13 DB 13, 10 DUP(32), 22 DUP(247), "$" 
+
+  
  
 
 ;DIBUJO DE UN NAVIO
@@ -1425,7 +1499,9 @@ ESP_DBJ DB 13, 1 DUP(32), 2 DUP(178), 74 DUP(32), 2 DUP(178), 10, "$"
 ;MENSAJE DE DESPEDIDA
 MSJ_FIN1 DB 13, 20 DUP(32), 218, 38 DUP(196), 191, 10, "$"    
 MSJ_FIN2 DB 13, 32, 5 DUP(60), 14 DUP(196), 180, " Gracias por jugar, hasta la pr", 162, "xima! ", 195, 14 DUP(196), 5 DUP(62), 32, "$"    
-MSJ_FIN3 DB 13, 20 DUP(32), 192, 38 DUP(196), 217, "$"      
+MSJ_FIN3 DB 13, 20 DUP(32), 192, 38 DUP(196), 217, "$"
+
+      
 
 
 ;LETRAS DE COLUMNAS (CABECERA DE LA MATRIZ)
@@ -1499,7 +1575,10 @@ FEL7 DB 13, 7 DUP(32), 200, 64 DUP(205), 188, 10, "$"
 ;MENSAJE SI JUGADOR GANA PARTIDA
 GANADOR1  DB 13, 10, 6 DUP(32), 218, 66 DUP(196), 191, 10, "$"
 GANADOR2  DB 13, ">>>", 3 DUP(196), 180, "  Lograste hundir la flota naval enemiga. Has ganado el juego!!!  ", 195, 3 DUP(196), "<<<$"
-GANADOR3  DB 13, 6 DUP(32), 192, 66 DUP(196), 217, 3 DUP(10), "$"
+GANADOR3  DB 13, 6 DUP(32), 192, 66 DUP(196), 217, 3 DUP(10), "$"  
+
+
+;
 
 
 ;___________________________________________
