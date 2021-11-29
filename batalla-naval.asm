@@ -266,7 +266,6 @@ PANTALLA_CARGA:
     INT 10h
     
     MOV AH, 09h
-    
     LEA DX, MSJ_CARGA 
     INT 21H 
     
@@ -745,7 +744,7 @@ MODO_JUEGO:     ;Compara si se eligio modo de prueba, caso contrario continuar c
     JNE PREPARAR_TABLERO_JUGADOR
 
 
-MODO_PRUEBA:
+MOSTRAR_TABLERO_REAL:
     MOV AH, 00h
     MOV AL, 03h
     INT 10h 
@@ -758,8 +757,7 @@ MODO_PRUEBA:
     MOV SI, 0
     
     MOV BL, '1'
-                                                   
-    NUM_FILA_PRUEBA:
+    FILA:
         MOV AH, 02h
         MOV DX, 9
         INT 21h
@@ -776,30 +774,29 @@ MODO_PRUEBA:
         
         MOV CX, 6
            
-        CONTENIDO_FILA_PRUEBA:
+        CONTENIDO:
             MOV DX, 32
             INT 21h
             
             MOV DL, TABLERO_REAL[SI]
-            INT 21h 
+            INT 21h
             
             INC SI
-            LOOP CONTENIDO_FILA_PRUEBA
+            LOOP CONTENIDO
             
-            MOV DX, 10
-            INT 21h
-            
-            MOV DX, 13
-            INT 21h
+        MOV DX, 10
+        INT 21h
+        MOV DX, 13      
+        INT 21h
         
-        INC BL
+        INC BL          
         INC DI      
-        CMP DI, 5       
-        JLE NUM_FILA_PRUEBA
-       
-        CMP NUM_MISILES, 0
-        JE  FINAL_PARTIDA
-        JNE INFO_PARTIDA
+        CMP DI, 6       
+        JL  FILA
+    
+    CMP NUM_MISILES, 0
+    JE  FINAL_PARTIDA
+    JMP INFO_PARTIDA
     
                     
 PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador 
@@ -819,8 +816,11 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
     MOV AH, 00h
     MOV AL, 03h
     INT 10h 
-    
-    ;Muestra las letras de las columnas de la matriz
+       
+    CMP NUM_MISILES, 0
+    JE  MOSTRAR_TABLERO_REAL    ;Si NUM_MISILES == 0 entonces ya no hay mas misiles (intentos) disponibles y el juego acaba
+        
+    ;Imprime las letras de las columnas de la matriz
     MOV AH, 09h 
     LEA DX, COLS    
     INT 21h
@@ -829,7 +829,6 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
     MOV SI, 0
     
     MOV BL, '1'     ;Numero de fila 
-                                                
     NUM_FILA:
         MOV AH, 02h
         MOV DX, 9
@@ -842,7 +841,7 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
         INT 21h
         INT 21h
         
-        ;Muestra en consola el digito del numero de fila
+        ;Imprime el digito del numero de fila
         MOV DL, BL
         INT 21h
         
@@ -850,44 +849,44 @@ MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
         MOV CX, 6
            
         CONTENIDO_FILA:
-            MOV DX, 32
+            MOV DX, 32      ;Barra espaciadora
             INT 21h
             
+            ;Imprime el contenido de la fila de TABLERO_JUGADOR
             MOV DL, TABLERO_JUGADOR[SI]
-            INT 21h 
+            INT 21h
             
             INC SI
             LOOP CONTENIDO_FILA     ;Muestra la fila[SI] (indice) como se encuentra actualmente en TABLERO_JUGADOR
                                                                           
-            MOV DX, 10
-            INT 21h
-            
-            MOV DX, 13
-            INT 21h
+        MOV DX, 10      ;Nueva linea (Line feed)
+        INT 21h
+        MOV DX, 13      ;Retorno de carro (Carriage return)
+        INT 21h
         
-        INC BL          ;Aumenta en 1 el numero de fila (numFila++) para muestra la siguiente
+        INC BL          ;Aumenta en 1 el numero de fila (numFila++) para mostrar la siguiente
         INC DI      
-        CMP DI, 5       ;Repite el proceso 6 veces (matriz 6x6)
-        JLE NUM_FILA
-       
-        CMP NUM_MISILES, 0
-        JE  FINAL_PARTIDA       ;Si la variable NUM_MISILES == 0 entonces ya no hay mas misiles (intentos) disponibles y el juego acaba
-        
-
-INFO_PARTIDA:       ;Bloque para pedir al jugador los datos de su jugada
+        CMP DI, 6       ;Repite el proceso 6 veces (matriz 6x6)
+        JL  NUM_FILA
+    
+    
+INFO_PARTIDA:
     ;Muestra en consola la guia del juego   
     MOV AH, 09h
     LEA DX, AYUDA
-    INT 21h                                  
-    
+    INT 21h
+    ;Muestra en consola mensaje de navios hundidos
+    LEA DX, MSJ_NAV_HUNDIDOS
+    INT 21h
+    ;Muestra en consola el numero de navios hundidos
+    LEA DX, NAV_IMP
+    INT 21h
     ;Muestra en consola mensaje de intentos restantes
-    MOV AH, 09h
     LEA DX, MSJ_NUM_MISILES
     INT 21h
-    
+    ;Prepara registros para descomponer y convertir numero de misiles y mostrar en consola
     MOV AX, NUM_MISILES
     MOV CX, 0
-    
     DESCOMPONER_NUM_MISILES:    ;Descompone los digitos de la variable NUM_MISILES
         MOV BX, 10
         DIV BL          ;Divide numero de misiles para 10
@@ -1046,7 +1045,7 @@ COLUMNA_ILEGAL:
     INT 21h
    
     CMP MDP_FLAG, '2'
-    JE  MODO_PRUEBA
+    JE  MOSTRAR_TABLERO_REAL
     JNE MOSTRAR_TABLERO_JUGADOR
     
     
@@ -1067,7 +1066,7 @@ FILA_ILEGAL:
     INT 21h
    
     CMP MDP_FLAG, '2'
-    JE  MODO_PRUEBA
+    JE  MOSTRAR_TABLERO_REAL
     JNE MOSTRAR_TABLERO_JUGADOR
     
     
@@ -1088,7 +1087,7 @@ COORDENADAS_REPETIDAS:
     INT 21h
    
     CMP MDP_FLAG, '2'
-    JE  MODO_PRUEBA
+    JE  MOSTRAR_TABLERO_REAL
     JNE MOSTRAR_TABLERO_JUGADOR
           
           
@@ -1208,7 +1207,7 @@ ACIERTO:        ;Bloque para verificar si el jugador logro impactar un navio
     INT 21h
 
     CMP MDP_FLAG, '2'
-    JE  MODO_PRUEBA
+    JE  MOSTRAR_TABLERO_REAL
     JNE MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
      
  
@@ -1226,10 +1225,10 @@ FALLO:
     INT 21h
     
     CMP MDP_FLAG, '2'
-    JE  MODO_PRUEBA
+    JE  MOSTRAR_TABLERO_REAL
     JNE MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
- 
- 
+    
+
 FINAL_PARTIDA:
     MOV AH, 09h
     LEA DX, IMP1
@@ -1244,8 +1243,13 @@ FINAL_PARTIDA:
    
 RESET_VARS:     ;Reinicia variables auxiliares
     MOV NUM_MISILES, 20
-    MOV [NAV_IMP], '0'
-    MOV [AUX], 0
+    MOV [NAV_IMP]  , '0'
+    MOV [AUX]       , 0
+    MOV SUBM_IMP    , 0
+    MOV CRUC_MAY_IMP, 0
+    MOV CRUC_MIN_IMP, 0
+    MOV PORT_MAY_IMP, 0
+    MOV PORT_MIN_IMP, 0
     
     MOV SI, 0
     MOV CX, 35
@@ -1291,7 +1295,7 @@ MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finali
     
     ;Valida numero de opcion introducido por jugador    
     CMP AL, '1'
-    JE PREPARAR_TABLERO_JUGADOR
+    JE PANTALLA_CARGA
    
     CMP AL, '2' 
     JE SALIR_JUEGO
@@ -1332,49 +1336,42 @@ MENU4:
           
        
 VICTORIA:
+    MOV AH, 09h
+    LEA DX, PTPC
+    INT 21h
+    
+    MOV AH, 01h
+    INT 21h
+    
     ;Limpia la consola
     MOV AH, 00h
     MOV AL, 03h
     INT 10h
-
     ;Muestra en consola cartel de felicitaciones
     MOV AH, 09h
     LEA DX, FEL1
-    INT 21H
-   
+    INT 21h
     LEA DX, FEL2
-    INT 21H
-   
+    INT 21h
     LEA DX, FEL3
-    INT 21H
-   
+    INT 21h
     LEA DX, FEL4
-    INT 21H
-   
+    INT 21h
     LEA DX, FEL5
-    INT 21H
-    
+    INT 21h
     LEA DX, FEL6
-    INT 21H
-   
+    INT 21h
     LEA DX, FEL7
-    INT 21H
-
+    INT 21h
     ;Muestra en consola mensaje de felicitaciones a jugador ganador
     LEA DX, GANADOR1
-    INT 21H
-   
+    INT 21h
     LEA DX, GANADOR2
-    INT 21H
-   
+    INT 21h
     LEA DX, GANADOR3
-    INT 21H
+    INT 21h
     
     JMP RESET_VARS
-   
-;    CMP MDP_FLAG, '2'
-;    JE  MENU4       ;Saltar al menu para salir del modo de prueba o del juego
-;    JNE MENU3       ;Saltar al menu para intentar de nuevo o no
          
          
 SALIR_JUEGO:    ;Bloque para salir del juego
@@ -1588,12 +1585,14 @@ TABLERO_JUGADOR DB 36 DUP(250)  ;TABLERO_JUGADOR DB 25 DUP(250) (ORIGINAL)
 
 ;MENSAJE DE AYUDA PARA EL JUGADOR
 AYUDA DB 2 DUP(10), 13, 9, "Acertaste = 1  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
+;MENSAJE DE NAVIOS HUNDIDOS:
+MSJ_NAV_HUNDIDOS DB 13, 9, "Nav", 161, "os hundidos: $"
+;CONTADOR PARA NAVIOS QUE JUGADOR LOGRO IMPACTAR
+NAV_IMP DB "0$"
 ;MENSAJE DE MISILES (INTENTOS) RESTANTES
 MSJ_NUM_MISILES DB 13, 9, "Misiles (intentos) restantes: $"
 ;CONTADOR DE NUMERO DE MISILES (INTENTOS) DEL JUGADOR
 NUM_MISILES DW 20       ;DESCOMPONER Y CONVERTIR NUMERO PARA MOSTRAR EN CONSOLA
-;CONTADOR PARA NAVIOS QUE JUGADOR LOGRO IMPACTAR
-NAV_IMP DB "0$"
                                                                      
 ;MENSAJE COORDENADAS DE ATAQUE
 MSJ_COORDS_ATAQUE DB 2 DUP(10), 13, 9, "Ingresa la celda que quieres atacar (Ejemplo: A5) $"
