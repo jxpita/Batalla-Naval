@@ -16,17 +16,17 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ### Opción 1: _Jugar_
 * __Juego en Progreso__
-![image](https://user-images.githubusercontent.com/34144827/143939049-f0fcba8e-1d7f-446d-9ed4-bb48557b28d9.png)
+![image](https://user-images.githubusercontent.com/34144827/143945815-b6fee89b-13cc-453e-bc16-fe4473b13cea.png)
 
 <br/>
 
 * __Juego Perdido__
-![image](https://user-images.githubusercontent.com/34144827/143939541-073cda52-aca7-4cef-a074-ea6511ce4834.png)
+![image](https://user-images.githubusercontent.com/34144827/143945170-d0f89ca7-d0f0-4393-b3c9-0097e976645c.png)
 
 <br/>
 
 * __Juego Ganado__
-![image](https://user-images.githubusercontent.com/34144827/143941793-c7dcf511-c19f-49b4-af6d-6631c17cb4ed.png)
+![image](https://user-images.githubusercontent.com/34144827/143946239-58121cd2-a52f-41d9-a5d0-9c1788c4344f.png)
 
 <br/>
 
@@ -61,3 +61,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 ![image](https://user-images.githubusercontent.com/34144827/143296831-0027bb50-fd32-4e5c-9b87-9e350765925c.png)
 
 <br/>
+
+### Adicional: _Opción Incorrecta_
+![image](https://user-images.githubusercontent.com/34144827/143946403-65715a85-3dff-4d92-b091-2b7c9087fddf.png)
+
