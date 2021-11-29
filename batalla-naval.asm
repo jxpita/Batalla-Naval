@@ -3,7 +3,7 @@ TITLE BATALLA_NAVAL
 ORG 100h 
 
 
-JMP UBICAR_FLOTA
+
 BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
 
     ;Coloca la consola en modo video (80x25)
@@ -15,35 +15,26 @@ BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
     MOV AH, 09h 
     LEA DX, BV1
     INT 21h 
-    MOV AH, 09h 
     LEA DX, BV2
     INT 21h
-    MOV AH, 09h 
     LEA DX, BV3
     INT 21h
-    MOV AH, 09h 
     LEA DX, BV4
     INT 21h
-    MOV AH, 09h 
     LEA DX, BV5
     INT 21h
-    MOV AH, 09h 
     LEA DX, BV6
     INT 21h
-    MOV AH, 09h 
     LEA DX, BV7
     INT 21h
     ;----------------------------------------------------------------------------   
-    MOV AH, 09h       
     LEA DX, LINEA1   ;Linea de separacion despues de bienvenida
     INT 21h
     
     ;Muestra en consola el nombre del juego (BATALLA  NAVAL)
-    MOV AH, 09h
     LEA DX, NOMBRE_JUEGO    ;Nombre del juego (BATALLA  NAVAL)
     INT 21h
 
-    MOV AH, 09h       
     LEA DX, LINEA2   ;Linea de separacion despues de nombre del juego
     INT 21h
 
@@ -54,23 +45,18 @@ MENU:       ;Menu principal
     MOV NUM_MENU, '1'
     
     ;Muestra en consola menu principal de opciones (Ingresa una opcion: )  
-    MOV AH, 09h
     LEA DX, IUO
     INT 21h
     
-    MOV AH, 09h
     LEA DX, JUGAR
     INT 21h
 
-    MOV AH, 09H
     LEA DX, REGLAS
     INT 21H
     
-    MOV AH, 09h
     LEA DX, SALIR
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MSJ_OP
     INT 21h
     
@@ -94,11 +80,10 @@ MENU:       ;Menu principal
 OP_INC:         ;Opcion incorrecta
 
     MOV AH, 09h
-    LEA DX, MSJ_ERR1
+    LEA DX, MSJ_ERR
     INT 21h
     
-    MOV AH, 09h
-    LEA DX, MSJ_ERR2
+    LEA DX, PTPC
     INT 21h
     
     MOV AH, 01h
@@ -133,61 +118,44 @@ MANUAL:         ;Manual - parte 1
     LEA DX, MAN1
     INT 21h
    
-    MOV AH, 09h
     LEA DX, MAN2
     INT 21h
    
-    MOV AH, 09h
     LEA DX, MAN3
     INT 21h
     
-    MOV AH, 09h
     LEA DX, ESP_MAN
     INT 21h
     
-    MOV AH, 09h
-    LEA DX, ESP_MAN
-    INT 21h
-    
-    MOV AH, 09h
     LEA DX, MAN4
     INT 21h
 
-    MOV AH, 09h
     LEA DX, MAN5
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN6
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN7
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN8
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN9
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN10
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN11
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN12
     INT 21h    
  
-    ;Muestra en consola mensaje: "Presiona (P) cualquier tecla para (P) continuar (C)" = PPC
-    MOV AH, 09h
-    LEA DX, PPC
+    ;Muestra en consola mensaje: "Presiona (P) cualquier tecla para (P) continuar (C)" = MAN_PPC
+    LEA DX, MAN_PPC
     INT 21h
    
     MOV AH, 01h
@@ -202,47 +170,36 @@ MANUAL2:        ;Manual - parte 2
     LEA DX, ESP_MAN
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN13
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN14
     INT 21h
    
-    MOV AH, 09h
     LEA DX, MAN15
     INT 21h
    
-    MOV AH, 09h
     LEA DX, MAN16
     INT 21h
    
-    MOV AH, 09h
     LEA DX, MAN17
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MAN18
     INT 21h 
     
-    MOV AH, 09h
     LEA DX, MAN19
     INT 21h 
     
-    MOV AH, 09h
     LEA DX, MAN20
     INT 21h 
     
-    MOV AH, 09h
     LEA DX, MAN21
     INT 21h
     
-    MOV AH, 09h
     LEA DX, ESP_MAN
     INT 21h 
     
-    MOV AH, 09h
     LEA DX, MAN22
     INT 21h
    
@@ -255,24 +212,19 @@ MENU2:      ;Bloque correspondiente al segundo menu, mostrado despues del manual
     MOV NUM_MENU, '2'
     
     ;Muestra en consola pregunta a jugador
-    MOV AH, 09h
     LEA DX, QQHA    ;?Que quieres hacer ahora?
     INT 21h
     
     ;Muestra en consola segundo menu de opciones  
-    MOV AH, 09h
     LEA DX, JUGAR
     INT 21h
    
-    MOV AH, 09h
     LEA DX, REP_REGLAS
     INT 21h
 
-    MOV AH, 09h
     LEA DX, SALIR
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MSJ_OP
     INT 21h  
  
@@ -296,7 +248,7 @@ MENU2:      ;Bloque correspondiente al segundo menu, mostrado despues del manual
 PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador 
 
     MOV SI, 0
-    MOV CX, 36      ;CAMBIAR A 25
+    MOV CX, 36
       
     REINICIAR_TABLERO_JUGADOR:      ;Inicializa el tablero del jugador (TABLERO_JUGADOR)
         MOV TABLERO_JUGADOR[SI], 250    ; Caracter ASCII = punto de altura media
@@ -321,7 +273,6 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
         CMP DI, 0               ;Si contador (registro DI) == 0  ---> Ya se ubicaron los 2 navios
         JE  UBICAR_SUBMARINO    ;Entonces saltar directamente a MOSTRAR_TABLERO_JUGADOR
         
-        
         MOV DX, 00h
         MOV AH, 2Ch
         INT 21h
@@ -331,8 +282,8 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
         MOV DX, 2
         DIV DL
         CMP AH, 1
-        JE  UBICAR_CRUCERO
-        JNE UBICAR_PORTAVIONES
+        JE  UBICAR_PORTAVIONES
+        JNE UBICAR_CRUCERO
                 
         UBICAR_PORTAVIONES:   ;Ubica un PORTAVIONES de manera horizontal o vertical
             CALL GEN_POS_ALEA       ;Genera posicion aleatoria para ubicar un PORTAVIONES (el resultado se almacena en el registro BX)
@@ -371,8 +322,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
                         
+                    CMP DI, 2
+                    JE PRIMER_PORT_DER
+                    JL SEGUNDO_PORT_DER
+                    
+                    PRIMER_PORT_DER:
+                        MOV CHAR_PORT, 'P'
+                        JMP SUMAR_PORT_POS_X
+                    
+                    SEGUNDO_PORT_DER:
+                        MOV CHAR_PORT, 'p'
+                    
                     SUMAR_PORT_POS_X:           ;Si no colisiona, se ubica hacia la DERECHA, en la posicion aleatoria generada 
-                        MOV TABLERO_REAL[SI], 'P'
+                        MOV DL, CHAR_PORT
+                        MOV TABLERO_REAL[SI], DL
                         INC SI
                         LOOP SUMAR_PORT_POS_X
                         
@@ -387,8 +350,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
                         
+                    CMP DI, 2
+                    JE PRIMER_PORT_IZQ
+                    JL SEGUNDO_PORT_IZQ
+                    
+                    PRIMER_PORT_IZQ:
+                        MOV CHAR_PORT, 'P'
+                        JMP RESTAR_PORT_POS_X
+                    
+                    SEGUNDO_PORT_IZQ:
+                        MOV CHAR_PORT, 'p'
+                    
                     RESTAR_PORT_POS_X:          ;Si no colisiona, se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'P'
+                        MOV DL, CHAR_PORT
+                        MOV TABLERO_REAL[SI], DL
                         DEC SI
                         LOOP RESTAR_PORT_POS_X
                         
@@ -417,10 +392,22 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     ADD BX, 6                   ;Mueve el indice hacia la ABAJO
                     LOOP COLISION_INF_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
                     
-                    MOV CX, TAM_PORT 
+                    MOV CX, TAM_PORT
+                    
+                    CMP DI, 2
+                    JE PRIMER_PORT_INF
+                    JL SEGUNDO_PORT_INF
+                    
+                    PRIMER_PORT_INF:
+                        MOV CHAR_PORT, 'P'
+                        JMP SUMAR_PORT_POS_Y
+                    
+                    SEGUNDO_PORT_INF:
+                        MOV CHAR_PORT, 'p' 
                         
                     SUMAR_PORT_POS_Y:           ;Si no colisiona, se ubica hacia la ABAJO, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'P'
+                        MOV DL, CHAR_PORT
+                        MOV TABLERO_REAL[SI], DL
                         ADD SI, 6
                         LOOP SUMAR_PORT_POS_Y
                         
@@ -435,8 +422,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_PORT 
                         
+                    CMP DI, 2
+                    JE PRIMER_PORT_SUP
+                    JL SEGUNDO_PORT_SUP
+                    
+                    PRIMER_PORT_SUP:
+                        MOV CHAR_PORT, 'P'
+                        JMP RESTAR_PORT_POS_Y
+                    
+                    SEGUNDO_PORT_SUP:
+                        MOV CHAR_PORT, 'p'
+                    
                     RESTAR_PORT_POS_Y:          ;Si no colisiona, se ubica hacia la ARRIBA, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'P'
+                        MOV DL, CHAR_PORT
+                        MOV TABLERO_REAL[SI], DL
                         SUB SI, 6
                         LOOP RESTAR_PORT_POS_Y
                         
@@ -480,8 +479,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_CRUC            ;El CRUCERO ocupa 4 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
                         
+                    CMP DI, 2
+                    JE PRIMER_CRUC_DER
+                    JL SEGUNDO_CRUC_DER
+                    
+                    PRIMER_CRUC_DER:
+                        MOV CHAR_CRUC, 'C'
+                        JMP SUMAR_CRUC_POS_X
+                    
+                    SEGUNDO_CRUC_DER:
+                        MOV CHAR_CRUC, 'c'
+                    
                     SUMAR_CRUC_POS_X:           ;Si no colisiona, se ubica hacia la DERECHA, en la posicion aleatoria generada 
-                        MOV TABLERO_REAL[SI], 'C'
+                        MOV DL, CHAR_CRUC
+                        MOV TABLERO_REAL[SI], DL
                         INC SI
                         LOOP SUMAR_CRUC_POS_X
                         
@@ -496,8 +507,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_CRUC            ;El CRUCERO ocupa 4 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
                         
+                    CMP DI, 2
+                    JE PRIMER_CRUC_IZQ
+                    JL SEGUNDO_CRUC_IZQ
+                    
+                    PRIMER_CRUC_IZQ:
+                        MOV CHAR_CRUC, 'C'
+                        JMP RESTAR_CRUC_POS_X
+                    
+                    SEGUNDO_CRUC_IZQ:
+                        MOV CHAR_CRUC, 'c'
+                    
                     RESTAR_CRUC_POS_X:          ;Si no colisiona, se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'C'
+                        MOV DL, CHAR_CRUC
+                        MOV TABLERO_REAL[SI], DL
                         DEC SI
                         LOOP RESTAR_CRUC_POS_X
                         
@@ -528,8 +551,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_CRUC 
                         
+                    CMP DI, 2
+                    JE PRIMER_CRUC_INF
+                    JL SEGUNDO_CRUC_INF
+                    
+                    PRIMER_CRUC_INF:
+                        MOV CHAR_CRUC, 'C'
+                        JMP SUMAR_CRUC_POS_Y
+                    
+                    SEGUNDO_CRUC_INF:
+                        MOV CHAR_CRUC, 'c'
+                    
                     SUMAR_CRUC_POS_Y:           ;Si no colisiona, se ubica hacia la ABAJO, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'C'
+                        MOV DL, CHAR_CRUC
+                        MOV TABLERO_REAL[SI], DL
                         ADD SI, 6
                         LOOP SUMAR_CRUC_POS_Y
                         
@@ -544,8 +579,20 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     MOV CX, TAM_CRUC 
                         
+                    CMP DI, 2
+                    JE PRIMER_CRUC_SUP
+                    JL SEGUNDO_CRUC_SUP
+                    
+                    PRIMER_CRUC_SUP:
+                        MOV CHAR_CRUC, 'C'
+                        JMP RESTAR_CRUC_POS_Y
+                    
+                    SEGUNDO_CRUC_SUP:
+                        MOV CHAR_CRUC, 'c'
+                    
                     RESTAR_CRUC_POS_Y:          ;Si no colisiona, se ubica hacia la ARRIBA, en la posicion aleatoria generada
-                        MOV TABLERO_REAL[SI], 'C'
+                        MOV DL, CHAR_CRUC
+                        MOV TABLERO_REAL[SI], DL
                         SUB SI, 6
                         LOOP RESTAR_CRUC_POS_Y
                         
@@ -655,91 +702,60 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
                     
                     
 MOSTRAR_TABLERO_JUGADOR:      ;Actualizacion de TABLERO_JUGADOR
-     
     ;Limpia la consola
     MOV AH, 00h
     MOV AL, 03h
     INT 10h 
     
-;    ;Muestra las letras de las columnas de la matriz
-;    MOV AH, 09h 
-;    LEA DX, L_SUPERIOR_MATRIZ    
-;    INT 21h 
-    
+    ;Muestra las letras de las columnas de la matriz
     MOV AH, 09h 
     LEA DX, COLS    
-    INT 21h 
-    
-;    MOV AH, 09h 
-;    LEA DX, L_INTERMEDIA_MATRIZ    
-;    INT 21h 
-    
-    CALL PRINT_SDL
+    INT 21h
     
     MOV DI, 0
     MOV SI, 0
     
     MOV BL, '1'     ;Numero de fila 
                                                 
-    NUM_FILA:  
-        ;Muestra en consola el digito del numero de fila
-        ;MOV AH, 02h
-;        MOV DL, 179
-;        INT 21h
-;        MOV AH, 02h
-;        MOV DL, 32
-;        INT 21h 
+    NUM_FILA:
         MOV AH, 02h
+        MOV DX, 9
+        INT 21h
+        INT 21h
+        INT 21h
+        INT 21h
+        
+        MOV DX, 32
+        INT 21h
+        INT 21h
+        
+        ;Muestra en consola el digito del numero de fila
         MOV DL, BL
         INT 21h
-        ;MOV AH, 02h
-;        MOV DL, 32
-;        INT 21h
-;        MOV AH, 02h
-;        MOV DL, 179
-;        INT 21h 
         
         ;Prepara registro CX para ejecutar CONTENIDO_FILA 6 veces (6 filas)                             
-        MOV CX, 6       ;CAMBIAR A 5
+        MOV CX, 6
            
-    CONTENIDO_FILA: 
-;        MOV AH, 02h
-;        MOV DL, 32
-;        INT 21h
-        MOV AH, 02h
-        MOV DL, TABLERO_REAL[SI]        ;AQUI USAR TABLERO_JUGADOR
-        INT 21h
-        ;MOV AH, 02h
-;        MOV DL, 32
-;        INT 21h
-;        MOV AH, 02h
-;        MOV DL, 179
-;        INT 21h
-        INC SI
-        LOOP CONTENIDO_FILA     ;Muestra la fila[SI] (indice) como se encuentra actualmente en TABLERO_JUGADOR
-                                                                      
-        ;CALL PRINT_SDL
+        CONTENIDO_FILA:
+            MOV DX, 32
+            INT 21h
+            
+            MOV DL, TABLERO_REAL[SI]        ;AQUI USAR TABLERO_JUGADOR
+            INT 21h 
+            
+            INC SI
+            LOOP CONTENIDO_FILA     ;Muestra la fila[SI] (indice) como se encuentra actualmente en TABLERO_JUGADOR
+                                                                          
+            MOV DX, 10
+            INT 21h
+            
+            MOV DX, 13
+            INT 21h
         
-;        CMP DI, 4
-;        JLE LINEA_INTERMEDIA
-;        CMP DI, 4
-;        JG  LINEA_INFERIOR
-;        
-;        LINEA_INTERMEDIA:
-            ;MOV AH, 09h 
-            ;LEA DX, L_INTERMEDIA_MATRIZ    
-            ;INT 21h
-        
-       ; LINEA_INFERIOR:    
-;            MOV AH, 09h
-;            LEA DX, L_INFERIOR_MATRIZ
-;            INT 21h 
-    
-        CALL PRINT_SDL
         
         INC BL          ;Aumenta en 1 el numero de fila (numFila++) para muestra la siguiente
         INC DI      
-        CMP DI, 5       ;Repite el proceso 6 veces (matriz 6x6)     ;CAMBIAR A 5  (MATRIZ 5x5)
+        CMP DI, 5       ;Repite el proceso 6 veces (matriz 6x6)
         JLE NUM_FILA
        
         CMP NUM_MISILES, 0
@@ -788,7 +804,7 @@ INFO_PARTIDA:       ;Bloque para pedir al jugador los datos de su jugada
         JNZ CONVERTIR_NUM_MISILES
     
 
-POSICION_X:         ;EJE "X"
+PEDIR_LETRA_COLUMNA:         ;EJE "X"
 
     MOV AH, 09h
     LEA DX, MSJ_COORDS_ATAQUE
@@ -804,49 +820,47 @@ POSICION_X:         ;EJE "X"
     INT 21h         ;Interrupcion para pedir un caracter (resultado se almacena en registro AL)
     
     MOV SI, 0       ;Reinicia registro SI para usarlo como indice y recorrer arreglo LETRAS
-    MOV CX, 12      ;CAMBIAR A 5 (ORIGINAL)            
+    MOV CX, 12      ;Asigna el valor de 12 al registro CX para hacer el LOOP (BUCLE)            
     
     CMP AL, "`"     ;Caracter ASCII 96 (uno antes del 'a' = ASCII 97)
     JL MAYUSCULA    ;Si caracter ingresado es menor a 96 ya no puede ser minuscula
     JG MINUSCULA    ;Si caracter ingresado es mayor a 96 ya no puede ser mayuscula
  
  
-MAYUSCULA:      ;Valida si el caracter ingresado esta entre 'A' y 'F' (Cambiar el rango hasta caracter 'E')
+MAYUSCULA:      ;Valida si el caracter ingresado esta entre 'A' y 'F'
    
     CMP AL, 'A'
-    JL DISPARO_ILEGAL
+    JL COLUMNA_ILEGAL
    
-    CMP AL, 'F'     ;CAMBIAR A 'E' 
-    JG DISPARO_ILEGAL
+    CMP AL, 'F' 
+    JG COLUMNA_ILEGAL
     
-    JMP VERIFICAR_NUMERO
+    JMP OBTENER_INDICE_COLUMNA
     
     
-MINUSCULA:      ;Valida si el caracter ingresado esta entre 'a' y 'e' (Cambiar el rango hasta caracter 'f')
+MINUSCULA:      ;Valida si el caracter ingresado esta entre 'a' y 'f'
 
     CMP AL, 'a'
-    JL DISPARO_ILEGAL
+    JL COLUMNA_ILEGAL
    
-    CMP AL, 'f'     ;CAMBIAR A 'e'
-    JG DISPARO_ILEGAL      
-
-    JMP VERIFICAR_NUMERO
+    CMP AL, 'f'
+    JG COLUMNA_ILEGAL      
 
 
-VERIFICAR_NUMERO:       ;Verificar numero ASCII del caracter en arreglo LETRAS  
+OBTENER_INDICE_COLUMNA:    ;Obtiene el indice de la columna (el resultado se guarda en el registro SI)  
 
     CMP AL, LETRAS[SI]  
-    JE X1
+    JE PEDIR_NUMERO_FILA
     INC SI
-    LOOP VERIFICAR_NUMERO
+    LOOP OBTENER_INDICE_COLUMNA
     
    
-CORREGIR_EJE_X:
+CORREGIR_EJE_X:     ;Si la letra es minuscula se resta 6 al indice de la columna
 
     SUB SI, 6                                                             
                                                              
 
-X1:         ;EJE "Y" 
+PEDIR_NUMERO_FILA:         ;EJE "Y" 
 
     CMP SI, 6
     JGE CORREGIR_EJE_X
@@ -867,11 +881,11 @@ X1:         ;EJE "Y"
    
     ;Valida que el numero ingresado sea mayor a 1
     CMP AL, '1'
-    JL DISPARO_ILEGAL
+    JL FILA_ILEGAL
    
     ;Valida que el numero ingresado sea menor a 6
-    CMP AL, '6'     ;CAMBIAR A 5
-    JG DISPARO_ILEGAL    
+    CMP AL, '6'
+    JG FILA_ILEGAL    
     
     ;Se resta 30 hexadecimal para convertir el caracter ingresado de ASCII a numero hexadecimal 
     SUB AL, 30h
@@ -881,7 +895,7 @@ X1:         ;EJE "Y"
     DEC [PosY]
     
     ;Multiplica la posicion real por 6 para recorrer todos los espacios necesarios y llegar a la posicion deseada de la fila
-    MOV AL, 6       ;CAMBIAR A 5
+    MOV AL, 6
     MUL [PosY]
     MOV [PosY], AL
     
@@ -893,14 +907,14 @@ X1:         ;EJE "Y"
     
     ;Verifica que la combinacion de columna+fila no haya sido ingresada previamente
     MOV SI, 0
-    MOV CX, 19      ;19 posibles disparos de misil antes de que acabe el juego       ;CAMBIAR A 7    (ORIGINAL)
+    MOV CX, 19      ;19 posibles disparos de misil antes de que acabe el juego
     
     
 CMP_DISPARO:    ;Verifica que la posicion ingresada por el jugador no haya sido ingresada previamente
      
     ;Compara el valor copiado desde AX con los disparos guardados
     CMP BL, DISPAROS_REALIZADOS[SI]
-    JE DISPARO_ILEGAL
+    JE COORDENADAS_REPETIDAS
     INC SI
     LOOP CMP_DISPARO     ;Realiza un bucle recorriendo todos los disparos registrados para verificar que el jugador este realizando un lanzamiento legal
     
@@ -912,39 +926,73 @@ CMP_DISPARO:    ;Verifica que la posicion ingresada por el jugador no haya sido 
     INC [AUX]       ;Se debe incrementar el indice en uno para no sobreescribir los otros disparos registrados                
     DEC [NUM_MISILES]  ;Como se registro un nuevo lanzamiento, se resta un misil disponible
     
-    ;RESETEAR SALTO DE LINEA (POR ALGUNA RAZON, ESTE CAMBIA DE VALOR DURANTE LAS OPERACIONES INC Y DEC DE AUX Y NUM_MISILES)
-    MOV SDL[0], 10
+;    ;SI DA PROBLEMAS = DESCOMENTAR ESTE BLOQUE
+;    ;RESETEAR SALTO DE LINEA (POR ALGUNA RAZON, ESTE CAMBIA DE VALOR DURANTE LAS OPERACIONES INC Y DEC DE AUX Y NUM_MISILES)
+;    MOV SDL[0], 10
    
     ;Verifica si el jugador ha acertado el disparo
     CMP TABLERO_REAL[BX], '0'
     JE FALLO
     JNE ACIERTO
        
- 
-DISPARO_ILEGAL:     ;Verifica si el lanzamiento del jugador es legal                                   
+
+COLUMNA_ILEGAL:
 
     CALL PRINT_SDL
  
-    ;Muestra mensaje de posicion invalida parte 1  
+    ;Muestra mensaje de columna invalida
     MOV AH, 09h
-    LEA DX, POS_INV1
+    LEA DX, C_INV
     INT 21h
     
-    ;Muestra mensaje de posicion invalida parte 2  
-    MOV AH, 09h
-    LEA DX, POS_INV2
+    ;Presiona tecla para continuar  (PTPC)
+    LEA DX, PTPC
     INT 21h
     
     ;Presiona cualquier tecla para continuar
     MOV AH, 01h
     INT 21h
-    
-    ;Limpia la consola
-    MOV AH, 00h
-    MOV AL, 03h
-    INT 10h
    
-    ;MOV CX, 7      (POSIBLEMENTE NO SIRVA YA QUE EN BLOQUE MOSTRAR_TABLERO_JUGADOR CX = 6
+    JMP MOSTRAR_TABLERO_JUGADOR
+    
+    
+FILA_ILEGAL:
+
+    CALL PRINT_SDL
+ 
+    ;Muestra mensaje de fila invalida
+    MOV AH, 09h
+    LEA DX, F_INV
+    INT 21h
+    
+    ;Presiona tecla para continuar  (PTPC)
+    LEA DX, PTPC
+    INT 21h
+    
+    ;Presiona cualquier tecla para continuar
+    MOV AH, 01h
+    INT 21h
+   
+    JMP MOSTRAR_TABLERO_JUGADOR
+    
+    
+COORDENADAS_REPETIDAS:
+
+    CALL PRINT_SDL
+ 
+    ;Muestra mensaje de coordenadas ingresadas previamente
+    MOV AH, 09h
+    LEA DX, P_INV
+    INT 21h
+    
+    ;Presiona tecla para continuar  (PTPC)
+    LEA DX, PTPC
+    INT 21h
+    
+    ;Presiona cualquier tecla para continuar
+    MOV AH, 01h
+    INT 21h
+   
     JMP MOSTRAR_TABLERO_JUGADOR
           
           
@@ -954,20 +1002,120 @@ ACIERTO:        ;Bloque para verificar si el jugador logro impactar un navio
     LEA DX, MSJ_CON_IMP
     INT 21h
     
+    MOV AH, 02h
+    MOV DX, 7       ;BEEP!
+    INT 21h
+    
     MOV TABLERO_JUGADOR[BX], '1'    ;Reemplaza caracter 250 de la matriz por X en la posicion indicada por el jugador
    
-    INC [NAV_IMP]           ;Aumenta el numero de navios impactados
-    CMP [NAV_IMP], '9'      ;Compara con condicion de victoria       ;CONDICION REAL DE VICTORIA = 3 NAVIOS HUNDIDOS     ;CAMBIAR A '5' (ORIGINAL)
-    JE VICTORIA
-   
-    MOV AH, 09h
-    LEA DX, CONT_IMP
-    INT 21h
+    CMP TABLERO_REAL[BX], 'S'
+    JE  INCREMENTAR_IMPACTO_SUBM
     
-    MOV AH, 01h
-    INT 21h
+    CMP TABLERO_REAL[BX], 'C'
+    JE  INCREMENTAR_IMPACTO_CRUC_MAY
     
-    JMP MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
+    CMP TABLERO_REAL[BX], 'c'
+    JE  INCREMENTAR_IMPACTO_CRUC_MIN
+    
+    CMP TABLERO_REAL[BX], 'P'
+    JE  INCREMENTAR_IMPACTO_PORT_MAY
+    
+    CMP TABLERO_REAL[BX], 'p'
+    JE  INCREMENTAR_IMPACTO_PORT_MIN
+    
+    INCREMENTAR_IMPACTO_SUBM:
+        INC SUBM_IMP
+        MOV DX, TAM_SUBM
+        CMP SUBM_IMP, DL
+        JE  SUBM_HUNDIDO
+        JMP CONDICION_VICTORIA
+    
+    INCREMENTAR_IMPACTO_CRUC_MAY:
+        INC CRUC_MAY_IMP
+        MOV DX, TAM_CRUC
+        CMP CRUC_MAY_IMP, DL
+        JE  CRUC_HUNDIDO
+        JMP CONDICION_VICTORIA
+        
+    INCREMENTAR_IMPACTO_CRUC_MIN:
+        INC CRUC_MIN_IMP
+        MOV DX, TAM_CRUC
+        CMP CRUC_MIN_IMP, DL
+        JE  CRUC_HUNDIDO
+        JMP CONDICION_VICTORIA
+    
+    INCREMENTAR_IMPACTO_PORT_MAY:
+        INC PORT_MAY_IMP
+        MOV DX, TAM_PORT
+        CMP PORT_MAY_IMP, DL
+        JE  PORT_HUNDIDO
+        JMP CONDICION_VICTORIA
+    
+    INCREMENTAR_IMPACTO_PORT_MIN:
+        INC PORT_MIN_IMP
+        MOV DX, TAM_PORT
+        CMP PORT_MIN_IMP, DL
+        JE  PORT_HUNDIDO
+        JMP CONDICION_VICTORIA
+    
+    SUBM_HUNDIDO:
+        INC [NAV_IMP]           ;Aumenta el numero de navios HUNDIDOS
+        
+        MOV AH, 09h
+        LEA DX, MSJ_SUBM_HUNDIDO
+        INT 21h
+        
+        MOV AH, 02h
+        MOV DX, 7       ;BEEP!
+        INT 21h
+        INT 21h
+        INT 21h
+        
+        JMP CONDICION_VICTORIA
+        
+    CRUC_HUNDIDO:
+        INC [NAV_IMP]           ;Aumenta el numero de navios HUNDIDOS
+        
+        MOV AH, 09h
+        LEA DX, MSJ_CRUC_HUNDIDO
+        INT 21h
+        
+        MOV AH, 02h
+        MOV DX, 7       ;BEEP!
+        INT 21h
+        INT 21h
+        INT 21h
+        INT 21h
+        
+        JMP CONDICION_VICTORIA
+        
+    PORT_HUNDIDO:
+        INC [NAV_IMP]           ;Aumenta el numero de navios HUNDIDOS
+        
+        MOV AH, 09h
+        LEA DX, MSJ_PORT_HUNDIDO
+        INT 21h
+        
+        MOV AH, 02h
+        MOV DX, 7       ;BEEP!
+        INT 21h
+        INT 21h
+        INT 21h
+        INT 21h
+        INT 21h
+        
+    CONDICION_VICTORIA:    
+        CMP [NAV_IMP], '3'      ;Compara con condicion de victoria
+        JE VICTORIA
+       
+        MOV AH, 09h
+        LEA DX, PTPC
+        INT 21h
+        
+        MOV AH, 01h
+        INT 21h
+    
+        JMP MOSTRAR_TABLERO_JUGADOR      ;Regresa al bloque donde se actualiza el tablero del jugador
      
  
 FALLO:
@@ -978,8 +1126,7 @@ FALLO:
     
     MOV TABLERO_JUGADOR[BX], '0'    ;Reemplaza caracter 250 de la matriz por 0 en la posicion indicada por el jugador
     
-    MOV AH, 09h
-    LEA DX, CONT_IMP
+    LEA DX, PTPC
     INT 21h
     
     MOV AH, 01h
@@ -994,11 +1141,9 @@ FINAL_PARTIDA:
     LEA DX, IMP1
     INT 21h
    
-    MOV AH, 09h
     LEA DX, NAV_IMP  ;Muestra el numero de navios impactados
     INT 21h
    
-    MOV AH, 09h
     LEA DX, IMP2
     INT 21h
    
@@ -1025,7 +1170,7 @@ MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finali
         LOOP RESET_TABLERO_REAL
     
     MOV SI, 0
-    MOV CX, 19       ;CAMBIAR A 7
+    MOV CX, 19
     
     JMP RESET_JUEGO   
 
@@ -1041,15 +1186,12 @@ RESET_JUEGO:
     LEA DX, QJDN
     INT 21h
     
-    MOV AH, 09h
     LEA DX, OPC_SI
     INT 21h
    
-    MOV AH, 09h
     LEA DX, OPC_NO
     INT 21h
     
-    MOV AH, 09h
     LEA DX, MSJ_OP
     INT 21h
     
@@ -1079,40 +1221,31 @@ VICTORIA:
     LEA DX, FEL1
     INT 21H
    
-    MOV AH, 09h
     LEA DX, FEL2
     INT 21H
    
-    MOV AH, 09h
     LEA DX, FEL3
     INT 21H
    
-    MOV AH, 09h
     LEA DX, FEL4
     INT 21H
    
-    MOV AH, 09h
     LEA DX, FEL5
     INT 21H
     
-    MOV AH, 09h
     LEA DX, FEL6
     INT 21H
    
-    MOV AH, 09h
     LEA DX, FEL7
     INT 21H
 
     ;Muestra en consola mensaje de felicitaciones a jugador ganador
-    MOV AH, 09h
     LEA DX, GANADOR1
     INT 21H
    
-    MOV AH, 09h
     LEA DX, GANADOR2
     INT 21H
    
-    MOV AH, 09h
     LEA DX, GANADOR3
     INT 21H
    
@@ -1130,63 +1263,44 @@ SALIR_JUEGO:    ;Bloque para salir del juego
     MOV AH, 09h 
     LEA DX, DBJ1
     INT 21h
-    MOV AH, 09h 
     LEA DX, ESP_DBJ
     INT 21h
-    MOV AH, 09h 
     LEA DX, ESP_DBJ
     INT 21h 
-    MOV AH, 09h 
     LEA DX, DBJ2
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ3
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ4
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ5
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ6
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ7
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ8
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ9
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ10
     INT 21h
-    MOV AH, 09h 
     LEA DX, MAR1
     INT 21h
-    MOV AH, 09h 
     LEA DX, MAR2
     INT 21h
-    MOV AH, 09h 
     LEA DX, MAR3
     INT 21h
-    MOV AH, 09h 
     LEA DX, ESP_DBJ
     INT 21h
-    MOV AH, 09h 
     LEA DX, DBJ11
     INT 21h      
     
     ;Muestra en consola mensaje de finalizacion de juego
-    MOV AH, 09h
     LEA DX, MSJ_FIN1
     INT 21h
-    MOV AH, 09h
     LEA DX, MSJ_FIN2
     INT 21h
-    MOV AH, 09h
     LEA DX, MSJ_FIN3
     INT 21h
     
@@ -1208,7 +1322,7 @@ SDL DB 10, 13, "$"
 LETRAS DB 'A', 'B', 'C', 'D', 'E', 'F', 'a', 'b', 'c', 'd', 'e', 'f'    
 
 ;ARREGLO PARA ALMACENAR LA POSICION DE DISPAROS REALIZADOS
-DISPAROS_REALIZADOS DB 19 DUP(50)    ;CAMBIAR A 7 DUP(50)           ;7 POSIBLES DISPAROS ANTES DE FINALIZAR EL JUEGO
+DISPAROS_REALIZADOS DB 19 DUP(50)
 
 ;VARIABLE AUXILIAR
 AUX DW 0
@@ -1224,6 +1338,12 @@ TAM_SUBM DW 3
 TAM_CRUC DW 4
 TAM_PORT DW 5
 
+;CARACTERES DE LOS NAVIOS EN EL TABLERO REAL
+CHAR_PORT DB 'P$'
+CHAR_CRUC DB 'C$'
+
+;PRESIONA TECLA PARA CONTINUAR
+PTPC DB 10, 13, 9, "(Presiona cualquier tecla para continuar) $"
       
 ;CARTEL DE BIENVENIDA
 BV1 DB 13, 2 DUP(10), 8 DUP(32), 63 DUP(176), 10, "$" 
@@ -1235,7 +1355,7 @@ BV6 DB 13, 8 DUP(32), 2 DUP(176), "                                             
 BV7 DB 13, 8 DUP(32), 63 DUP(176), 2 DUP(10), "$" 
 ;NOMBRE DEL JUEGO
 LINEA1       DB 13, 201, 78 DUP(205), 187, "$"
-NOMBRE_JUEGO DB 13, 186, 5 DUP(196), 5 DUP(176), 5 DUP(177), 5 DUP(178), 5 DUP(219), 204, 4 DUP(205), "  BATALLA  NAVAL  ", 4 DUP(205), 185, 5 DUP(219), 5 DUP(178), 5 DUP(177), 5 DUP(176), 5 DUP(196), 186, "$"  
+NOMBRE_JUEGO DB 13, 186, 2 DUP(240), 5 DUP(176), 5 DUP(177), 5 DUP(178), 5 DUP(219), 204, 4 DUP(205), ">>>  BATALLA  NAVAL  <<<", 4 DUP(205), 185, 5 DUP(219), 5 DUP(178), 5 DUP(177), 5 DUP(176), 2 DUP(240), 186, "$"  
 LINEA2       DB 13, 200, 78 DUP(205), 188, 10, "$"
 
    
@@ -1253,34 +1373,33 @@ REP_REGLAS DB 13, 9, "2. Repetir las reglas", 10, "$"
 MSJ_OP DB 13, 10, 9, 16, " $"
 
 ;MENSAJE DE OPCION INCORRECTA
-MSJ_ERR1 DB 2 DUP(10), 13, 9, 173, "La opci", 162, "n que ingresaste es incorrecta!", 10, 13, "$"
-MSJ_ERR2 DB 9, "Intenta de nuevo. (Presiona cualquier tecla para continuar.)  $"
+MSJ_ERR DB 2 DUP(10), 13, 9, 173, "La opci", 162, "n que ingresaste es incorrecta! Intenta de nuevo.$"
 
 
 ;REGLAS DEL JUEGO
-MAN1  DB 13, 2 DUP(10), 25 DUP(32), 201, 28 DUP(205), 187, 10, "$"
-MAN2  DB 13, 201, 28 DUP(205), 185, "  REGLAS DEL JUEGO  ", 204, 28 DUP(205), 187, 10, "$"
-MAN3  DB 13, 186, 24 DUP(32), 200, 28 DUP(205), 188, 24 DUP(32), 186, "$"
-MAN4  DB 186, "  Batalla naval es un juego de mesa para dos jugadores, en el cual ambos      ", 186, "$"
-MAN5  DB 186, "  tienen que intentar adivinar en qu", 130, " celdas est", 160, "n los nav", 161, "os del ememigo.    ", 186, "$"
-MAN6  DB 186, "  El objetivo es derribar los nav", 161, "os del enemigo y gana quien logre derribar  ", 186, "$"
-MAN7  DB 186, "  primero todos los nav", 161, "os de su adversario. El juego original se juega en    ", 186, "$"
-MAN8  DB 186, "  dos rejillas. Una que representa la disposici", 162, "n de tus nav", 161, "os y el otro     ", 186, "$"
-MAN9  DB 186, "  que representa los nav", 161, "os del enemigo. Las rejillas son t", 161, "picamente         ", 186, "$"
-MAN10 DB 186, "  cuadradas, y se identifican horizontalmente por n", 163, "meros y verticalmente     ", 186, "$"
-MAN11 DB 186, "  por letras. En cada rejilla respectiva, cada jugador coloca sus nav", 161, "os y    ", 186, "$"
-MAN12 DB 186, "  registra los disparos de su oponente.                                       ", 186, "$"
-PPC   DB 186, "  (Presiona cualquier tecla para continuar)                                   ", 186, "$"
-MAN13 DB 186, "  Antes de que comience el juego, cada jugador debe colocar sus nav", 161, "os en     ", 186, "$"
-MAN14 DB 186, "  los tableros, alineados en celdas adyacentes seguidas, horizontal o         ", 186, "$"
-MAN15 DB 186, "  verticalmente. El n", 163, "mero de nav", 161, "os permitido es igual para ambos jugadores  ", 186, "$"
-MAN16 DB 186, "  y estos no pueden superponerse. Una vez colocados los nav", 161, "os, el juego      ", 186, "$"
-MAN17 DB 186, "  contin", 163, "a en una serie de turnos. En cada turno, un jugador indica una       ", 186, "$"
-MAN18 DB 186, "  posici", 162, "n (ejemplo: B6 ", 162, " F2) en la rejilla de su oponente. Si hay un nav", 161, "o   ", 186, "$"
-MAN19 DB 186, "  en esa celda, se coloca una marca roja. Si no, se coloca una marca blanca.  ", 186, "$"
-MAN20 DB 186, "  Los tipos de nav", 161, "os son: PORTAAVIONES (5 celdas), CRUCERO (4 celdas) y      ", 186, "$"
-MAN21 DB 186, "  SUBMARINO (3 celdas).                                                       ", 186, "$"
-MAN22 DB 200, 78 DUP(205), 188, 10, "$"
+MAN1    DB 13, 1 DUP(10), 29 DUP(32), 201, 20 DUP(205), 187, 10, "$"
+MAN2    DB 13, 201, 28 DUP(205), 185, "  REGLAS DEL JUEGO  ", 204, 28 DUP(205), 187, "$"
+MAN3    DB 13, 186, 28 DUP(32), 200, 20 DUP(205), 188, 28 DUP(32), 186, "$"
+MAN4    DB 186, "  Batalla naval es un juego de mesa para dos jugadores, en el cual ambos      ", 186, "$"
+MAN5    DB 186, "  tienen que intentar adivinar en qu", 130, " celdas est", 160, "n los nav", 161, "os del ememigo.    ", 186, "$"
+MAN6    DB 186, "  El objetivo es derribar los nav", 161, "os del enemigo y gana quien logre derribar  ", 186, "$"
+MAN7    DB 186, "  primero todos los nav", 161, "os de su adversario. El juego original se juega en    ", 186, "$"
+MAN8    DB 186, "  dos rejillas. Una que representa la disposici", 162, "n de tus nav", 161, "os y el otro     ", 186, "$"
+MAN9    DB 186, "  que representa los nav", 161, "os del enemigo. Las rejillas son t", 161, "picamente         ", 186, "$"
+MAN10   DB 186, "  cuadradas, y se identifican horizontalmente por n", 163, "meros y verticalmente     ", 186, "$"
+MAN11   DB 186, "  por letras. En cada rejilla respectiva, cada jugador coloca sus nav", 161, "os y    ", 186, "$"
+MAN12   DB 186, "  registra los disparos de su oponente.                                       ", 186, "$"
+MAN_PPC DB 186, "  (Presiona cualquier tecla para continuar)                                   ", 186, "$"
+MAN13   DB 186, "  Antes de que comience el juego, cada jugador debe colocar sus nav", 161, "os en     ", 186, "$"
+MAN14   DB 186, "  los tableros, alineados en celdas adyacentes seguidas, horizontal o         ", 186, "$"
+MAN15   DB 186, "  verticalmente. El n", 163, "mero de nav", 161, "os permitido es igual para ambos jugadores  ", 186, "$"
+MAN16   DB 186, "  y estos no pueden superponerse. Una vez colocados los nav", 161, "os, el juego      ", 186, "$"
+MAN17   DB 186, "  contin", 163, "a en una serie de turnos. En cada turno, un jugador indica una       ", 186, "$"
+MAN18   DB 186, "  posici", 162, "n (ejemplo: B6 ", 162, " F2) en la rejilla de su oponente. Si hay un nav", 161, "o   ", 186, "$"
+MAN19   DB 186, "  en esa celda, se coloca una marca roja. Si no, se coloca una marca blanca.  ", 186, "$"
+MAN20   DB 186, "  Los tipos de nav", 161, "os son: PORTAAVIONES (5 celdas), CRUCERO (4 celdas) y      ", 186, "$"
+MAN21   DB 186, "  SUBMARINO (3 celdas).                                                       ", 186, "$"
+MAN22   DB 200, 78 DUP(205), 188, 10, "$"
 ESP_MAN DB 13, 186, 78 DUP(32), 186, "$"
 
 ;?Que quieres hacer ahora?   
@@ -1310,10 +1429,7 @@ MSJ_FIN3 DB 13, 20 DUP(32), 192, 38 DUP(196), 217, "$"
 
 
 ;LETRAS DE COLUMNAS (CABECERA DE LA MATRIZ)
-COLS DB 179, "   ", 179, " A ", 179, " B ", 179, " C ", 179, " D ", 179, " E ", 179, " F ", 179, 10, 13, "$"       ;"\ A B C D E F $"
-L_SUPERIOR_MATRIZ   DB 218, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 194, 3 DUP(196), 191, 10, 13, "$"
-L_INTERMEDIA_MATRIZ DB 195, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 197, 3 DUP(196), 180, "$"
-L_INFERIOR_MATRIZ   DB 192, 3 DUP(196), 193, 3 DUP(196), 193, 3 DUP(196), 193, 3 DUP(196), 193, 3 DUP(196), 193, 3 DUP(196), 193, 3 DUP(196), 217, 10, 13, "$"
+COLS DB 4 DUP(9), "  \ A B C D E F", 10, 13, "$"
 
 ;TABLERO REAL DEL JUEGO
 TABLERO_REAL DB 36 DUP('0')     ;TABLERO_REAL DB 25 DUP('0')    (ORIGINAL)
@@ -1322,7 +1438,7 @@ TABLERO_JUGADOR DB 36 DUP(250)  ;TABLERO_JUGADOR DB 25 DUP(250) (ORIGINAL)
 
 
 ;MENSAJE DE AYUDA PARA EL JUGADOR
-AYUDA DB 10, 13, 9, "Acertaste = X  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
+AYUDA DB 2 DUP(10), 13, 9, "Acertaste = 1  ", 3 DUP(219), "  0 = Fallaste", 10, "$"
 ;MENSAJE DE MISILES (INTENTOS) RESTANTES
 MSJ_NUM_MISILES DB 13, 9, "Misiles (intentos) restantes: $"
 ;CONTADOR DE NUMERO DE MISILES (INTENTOS) DEL JUGADOR
@@ -1332,29 +1448,38 @@ NAV_IMP DB "0$"
                                                                      
 ;MENSAJE COORDENADAS DE ATAQUE
 MSJ_COORDS_ATAQUE DB 2 DUP(10), 13, 9, "Ingresa la celda que quieres atacar (ejemplo: A5) $"
-;POSICION 'X' INGRESADA POR JUGADOR
-X DB 10, 13, 9, "COLUMNA [A-F]: $"
-;POSICION 'Y' INGRESADA POR JUGADOR
-Y DB 10, 13, 9, "FILA [1-6]: $"
 
-;POSICION 'X' REAL EN EL TABLERO
+;POSICION 'X' EN EL TABLERO_REAL
 PosX DB 0  
-;POSICION 'Y' REAL EN EL TABLERO
+;POSICION 'Y' EN EL TABLERO_REAL
 PosY DB 0
 
-;MENSAJE DE POSICION INCORRECTA
-POS_INV1 DB 10, 13, 9, 173, "Posici", 162, "n inv", 160, "lida! (presiona cualquier tecla", 10, "$"
-POS_INV2 DB 13, 9, "para continuar)  $"
+;MENSAJES DE POSICION INCORRECTA
+C_INV DB 10, 13, 9, 173, "Columna inv", 160, "lida! Intenta de nuevo.$"
+F_INV DB 10, 13, 9, 173, "Fila inv", 160, "lida! Intenta de nuevo.$"
+P_INV DB 10, 13, 9, "Ya ingresaste esas coordenadas anteriormente. Intenta de nuevo.$"
 
 
 ;MENSAJES DE IMPACTO DE MISIL
-MSJ_CON_IMP DB 2 DUP(10), 13, 9, "Impacto confirmado! $"
+MSJ_CON_IMP DB 2 DUP(10), 13, 9, 173, "Impacto confirmado! $"
 MSJ_SIN_IMP DB 2 DUP(10), 13, 9, "Sin impacto... $"
-CONT_IMP DB 10, 13, 9, "(Presiona cualquier tecla para continuar) $"
 
- 
+
+;CONTADORES DE NAVIOS IMPACTADOS (POSTERIORMENTE PARA VERIFICAR SI SE HUNDIERON) 
+SUBM_IMP     DB 0
+CRUC_MAY_IMP DB 0
+CRUC_MIN_IMP DB 0
+PORT_MAY_IMP DB 0
+PORT_MIN_IMP DB 0
+
+;MENSAJES QUE SE MUESTRAN LUEGO DE HUNDIR UN NAVIO
+MSJ_SUBM_HUNDIDO DB 3 DUP(205), "> ", 3 DUP(173), "Submarino hundido!!!$"
+MSJ_CRUC_HUNDIDO DB 3 DUP(205), "> ", 4 DUP(173), "Crucero hundido!!!!$"
+MSJ_PORT_HUNDIDO DB 3 DUP(205), "> ", 5 DUP(173), "Portaviones hundido!!!!!$"
+
+
 ;RESUMEN DE PARTIDA
-IMP1 DB 2 DUP(10), 13, "Lograste impactar $"
+IMP1 DB 2 DUP(10), 13, "Lograste hundir $"
 IMP2 DB " nav", 161, "o(s) ...", 3 DUP(10), "$"
 
 ;TERCER MENU (DESPUES DE FINALIZAR PARTIDA)
@@ -1451,3 +1576,4 @@ DIRECCION_NAVIO ENDP
 ;EN LA MATRIZ: NUMERO_POSICION/6
 ;COCIENTE = INDICE_FILA
 ;RESIDUO  = INDICE_COLUMNA
+
