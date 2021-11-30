@@ -9,7 +9,6 @@ BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
     MOV AH, 00h
     MOV AL, 03h     ;Modo texto
     INT 10h
-                        
     ;Muestra en consola cartel de bienvenida
     MOV AH, 09h 
     LEA DX, BV1
@@ -29,11 +28,9 @@ BIENVENIDA:     ;Cartel de bienvenida y nombre del juego
     ;----------------------------------------------------------------------------   
     LEA DX, LINEA1   ;Linea de separacion despues de bienvenida
     INT 21h
-    
     ;Muestra en consola el nombre del juego (BATALLA  NAVAL)
     LEA DX, NOMBRE_JUEGO
     INT 21h
-
     LEA DX, LINEA2   ;Linea de separacion despues de nombre del juego
     INT 21h
 
@@ -1255,7 +1252,7 @@ RESET_VARS:     ;Reinicia variables auxiliares
     MOV CX, 35
     
     RESET_TABLERO_REAL:
-        MOV TABLERO_REAL[SI], '0'
+        MOV TABLERO_REAL[SI], 50
         INC SI
         LOOP RESET_TABLERO_REAL
     
@@ -1379,7 +1376,6 @@ SALIR_JUEGO:    ;Bloque para salir del juego
     MOV AH, 00h
     MOV AL, 03h     
     INT 10h
-    
     ;Muestra en consola dibujo ASCII de un navio
     MOV AH, 09h 
     LEA DX, DBJ1
