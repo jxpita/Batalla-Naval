@@ -1252,7 +1252,7 @@ RESET_VARS:     ;Reinicia variables auxiliares
     MOV CX, 35
     
     RESET_TABLERO_REAL:
-        MOV TABLERO_REAL[SI], 50
+        MOV TABLERO_REAL[SI], '0'
         INC SI
         LOOP RESET_TABLERO_REAL
     
@@ -1260,7 +1260,7 @@ RESET_VARS:     ;Reinicia variables auxiliares
     MOV CX, 19
 
     RESET_JUGADAS:
-        MOV DISPAROS_REALIZADOS[SI], 0
+        MOV DISPAROS_REALIZADOS[SI], 50
         INC SI
         LOOP RESET_JUGADAS
         
