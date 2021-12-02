@@ -323,36 +323,22 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
             
             ;Posiciones criticas
             CMP AH, 1                   ;CASO 1: Un PORTAVIONES solo cabe horizontalmente hacia la DERECHA en las columnas 0 (A) o 1 (B)
-            JLE COLISION_DER_PORT       ;Verifica posibles colisiones hacia la DERECHA antes de ubicarlo
+            JLE SUMAR_PORT_POS_X        ;Ubica el PORTAVIONES hacia la DERECHA
             CMP AH, 4                   ;CASO 2: Un PORTAVIONES solo cabe horizontalmente hacia la IZQUIERDA en las columnas 4 (E) o 5 (F)
-            JGE COLISION_IZQ_PORT       ;Verifica posibles colisiones hacia la IZQUIERDA antes de ubicarlo
+            JGE RESTAR_PORT_POS_X       ;Ubica el PORTAVIONES hacia la IZQUIERDA
             JMP UBICAR_PORTAVIONES      ;Si el PORTAVIONES no cabe horizontalmente hacia la derecha/izquierda salta al inicio del bloque para generar nueva posicion aleatoria
             
-            COLISION_DER_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia la DERECHA
-                CMP TABLERO_REAL[BX], '0'
-                JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
-                INC BX                      ;Mueve el indice hacia la DERECHA
-                LOOP COLISION_DER_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
-                
-                MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
-                SUMAR_PORT_POS_X:           ;Si no colisiona, se ubica hacia la DERECHA, en la posicion aleatoria generada 
-                    MOV TABLERO_REAL[SI], 'P'
-                    INC SI
-                    LOOP SUMAR_PORT_POS_X
-                    JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
+            SUMAR_PORT_POS_X:           ;Se ubica hacia la DERECHA, en la posicion aleatoria generada 
+                MOV TABLERO_REAL[SI], 'P'
+                INC SI
+                LOOP SUMAR_PORT_POS_X
+                JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
                             
-            COLISION_IZQ_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia la IZQUIERDA
-                CMP TABLERO_REAL[BX], '0'
-                JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
-                DEC BX                      ;Mueve el indice hacia la IZQUIERDA
-                LOOP COLISION_IZQ_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
-                
-                MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle) 
-                RESTAR_PORT_POS_X:          ;Si no colisiona, se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
-                    MOV TABLERO_REAL[SI], 'P'
-                    DEC SI
-                    LOOP RESTAR_PORT_POS_X
-                    JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
+            RESTAR_PORT_POS_X:          ;Se ubica hacia la IZQUIERDA, en la posicion aleatoria generada
+                MOV TABLERO_REAL[SI], 'P'
+                DEC SI
+                LOOP RESTAR_PORT_POS_X
+                JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
                             
         UBICAR_PORT_V:      ;Ubica un PORTAVIONES verticalmente
             MOV AX, SI
@@ -363,37 +349,23 @@ UBICAR_FLOTA:  ;Ubica la flota enemiga de manera aleatoria
             
             ;Posiciones criticas
             CMP AL, 1                   ;CASO 3: Un PORTAVIONES solo cabe verticalmente hacia la parte INFERIOR en las filas 0 (1) o 1 (2)
-            JLE COLISION_INF_PORT       ;Verifica posibles colisiones hacia la parte INFERIOR antes de ubicarlo
+            JLE SUMAR_PORT_POS_Y        ;Ubica el PORTAVIONES hacia la parte INFERIOR
             CMP AL, 4                   ;CASO 4: Un PORTAVIONES solo cabe verticalmente hacia la parte SUPERIOR en las filas 4 (5) o 5 (6)
-            JGE COLISION_SUP_PORT       ;Verifica posibles colisiones hacia la parte SUPERIOR antes de ubicarlo
+            JGE RESTAR_PORT_POS_Y       ;Ubica el PORTAVIONES hacia la parte SUPERIOR
             JMP UBICAR_PORTAVIONES      ;Si el PORTAVIONES no cabe verticalmente hacia arriba/abajo salta al inicio del bloque para generar nueva posicion aleatoria
             
-            COLISION_INF_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia ABAJO
-                CMP TABLERO_REAL[BX], '0'
-                JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
-                ADD BX, 6                   ;Mueve el indice hacia la parte INFERIOR
-                LOOP COLISION_INF_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES
+            SUMAR_PORT_POS_Y:           ;Se ubica hacia la parte INFERIOR, en la posicion aleatoria generada
+                MOV TABLERO_REAL[SI], 'P'
+                ADD SI, 6
+                LOOP SUMAR_PORT_POS_Y
+                JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
+        
+            RESTAR_PORT_POS_Y:          ;Se ubica hacia la parte SUPERIOR, en la posicion aleatoria generada
+                MOV TABLERO_REAL[SI], 'P'
+                SUB SI, 6
+                LOOP RESTAR_PORT_POS_Y
+                JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
                 
-                MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle)
-                SUMAR_PORT_POS_Y:           ;Si no colisiona, se ubica hacia la parte INFERIOR, en la posicion aleatoria generada
-                    MOV TABLERO_REAL[SI], 'P'
-                    ADD SI, 6
-                    LOOP SUMAR_PORT_POS_Y
-                    JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
-            
-            COLISION_SUP_PORT:              ;Antes de ubicarlo, verifica si el PORTAVIONES va a colisionar con otro navio hacia ARRIBA
-                CMP TABLERO_REAL[BX], '0'
-                JNE UBICAR_PORTAVIONES      ;Si colisiona saltar al inicio del bloque para pedir nueva posicion
-                SUB BX, 6                   ;Mueve el indice hacia la parte SUPERIOR
-                LOOP COLISION_SUP_PORT      ;Verifica para todas las celdas que ocupa el PORTAVIONES 
-                
-                MOV CX, TAM_PORT            ;El PORTAVIONES ocupa 5 celdas (Con LOOP el registro CX se resta en 1 hasta llegar a 0 y luego sale del bucle)
-                RESTAR_PORT_POS_Y:          ;Si no colisiona, se ubica hacia la parte SUPERIOR, en la posicion aleatoria generada
-                    MOV TABLERO_REAL[SI], 'P'
-                    SUB SI, 6
-                    LOOP RESTAR_PORT_POS_Y
-                    JMP UBICAR_CRUCERO      ;PORTAVIONES ubicado = ahora colocar CRUCERO
-                    
     UBICAR_CRUCERO:     ;Ubica un CRUCERO de manera horizontal o vertical
         CALL GEN_POS_ALEA       ;Genera posicion aleatoria para ubicar un CRUCERO (el resultado se almacena en el registro BX)
         
