@@ -52,7 +52,9 @@ MENU:       ;Menu principal
     INT 21h
     LEA DX, MSJ_OP
     INT 21h
-    ;Pide opcion a jugador
+    
+OP_MENU:    ;Pide opcion a jugador y la valida
+    CALL LIMPIAR_MSJ_OP_INC
     MOV AH, 01h
     INT 21h
     
@@ -150,24 +152,24 @@ MENU2:      ;Bloque correspondiente al segundo menu, mostrado despues del manual
     ;Muestra en consola pregunta a jugador
     LEA DX, QQHA    ;?Que quieres hacer ahora?
     INT 21h
-    
     ;Muestra en consola segundo menu de opciones  
     LEA DX, JUGAR
     INT 21h
-   
     LEA DX, PRUEBA
     INT 21h
-
     LEA DX, REP_REGLAS
     INT 21h
-    
     LEA DX, SALIR
     INT 21h
-    
     LEA DX, MSJ_OP
     INT 21h  
- 
-    ;Pide opcion a jugador
+    LEA DX, EEB
+    INT 21h
+    INT 21h
+    INT 21h
+    
+OP_MENU2:   ;Pide opcion a jugador y la valida
+    CALL LIMPIAR_MSJ_OP_INC
     MOV AH, 01h
     INT 21h
                             
@@ -194,35 +196,22 @@ OP_INC:         ;Opcion incorrecta
     MOV AH, 09h
     LEA DX, MSJ_ERR
     INT 21h
-    
-    MOV AL, 0
-    MOV BX, 0
-    MOV CX, 0
-    MOV DX, 0
     LEA DX, PTPC
     INT 21h
-    
-    MOV AH, 01h
+    MOV AH, 07h
     INT 21h
     
-    MOV AH, 00h
-    MOV AL, 03h
-    INT 10h
-    
-    CALL PRINT_SDL
-    CALL PRINT_SDL
-    
     CMP NUM_MENU, '1'
-    JE  MENU
+    JE  OP_MENU
 
     CMP NUM_MENU, '2'
-    JE  MENU2
+    JE  OP_MENU2
 
     CMP NUM_MENU, '3'
-    JE  MENU3
+    JE  OP_MENU3
     
     CMP NUM_MENU, '4'
-    JMP MENU4
+    JMP OP_MENU4
     
     
 PANTALLA_CARGA:
@@ -560,10 +549,8 @@ MOSTRAR_TABLERO_REAL:
         CONTENIDO:
             MOV DX, 32
             INT 21h
-            
             MOV DL, TABLERO_REAL[SI]
             INT 21h
-            
             INC SI
             LOOP CONTENIDO
             
@@ -582,7 +569,7 @@ MOSTRAR_TABLERO_REAL:
     JMP INFO_PARTIDA
     
                     
-PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador 
+PREPARAR_TABLERO_JUGADOR:     ;Prepara el tablero para el jugador
     MOV SI, 0
     MOV CX, 36
       
@@ -859,10 +846,10 @@ POSICION_REPETIDA:
     INT 21h
 
 POSICION_ILEGAL:
-    ;Presiona tecla para continuar  (PTPC)
+    ;Presiona tecla para continuar
     LEA DX, PTPC
     INT 21h
-    MOV AH, 01h
+    MOV AH, 07h
     INT 21h
     CALL LIMPIAR_MSJS_POSICION
     JMP PEDIR_LETRA_COLUMNA     ;Vuelve a pedir posicion de disparo luego de limpiar mensajes respectivos
@@ -969,8 +956,7 @@ ACIERTO:        ;Jugador logra impactar un navio
     MOV AH, 09h
     LEA DX, PTPC
     INT 21h
-    
-    MOV AH, 01h
+    MOV AH, 07h
     INT 21h
 
     CALL LIMPIAR_MSJS_POSICION    
@@ -999,7 +985,7 @@ FALLO:      ;Jugador no logra impactar navio
                                     ;revelando que no habia un navio en esa posicion
     LEA DX, PTPC
     INT 21h
-    MOV AH, 01h
+    MOV AH, 07h
     INT 21h
     
     CALL LIMPIAR_MSJS_POSICION    
@@ -1056,8 +1042,9 @@ MENU3:      ;Bloque correspondiente al segundo menu, mostrado despues del finali
     INT 21h
     LEA DX, MSJ_OP
     INT 21h
-    
-    ;Pide opcion a jugador
+
+OP_MENU3:   ;Pide opcion a jugador y la valida    
+    CALL LIMPIAR_MSJ_OP_INC
     MOV AH, 01h
     INT 21h
     
@@ -1084,8 +1071,9 @@ MENU4:
     INT 21h
     LEA DX, MSJ_OP
     INT 21h
-    
-    ;Pide opcion a jugador
+
+OP_MENU4:   ;Pide opcion a jugador y la valida
+    CALL LIMPIAR_MSJ_OP_INC
     MOV AH, 01h
     INT 21h
     
@@ -1223,11 +1211,8 @@ TAM_PORT DW 5
 ;PRESIONA TECLA PARA CONTINUAR
 PTPC DB 10, 13, 9, "(Presiona cualquier tecla para continuar) $"
 
-;PRESIONA TECLA PARA REVELAR NAVIOS
-PTPR DB 10, 13, 9, "(Presiona cualquier tecla para revelar los nav", 161, "os) $"
-      
 ;CARTEL DE BIENVENIDA
-BV1 DB 13, 2 DUP(10), 8 DUP(32), 63 DUP(176), 10, "$" 
+BV1 DB 13, 1 DUP(10), 8 DUP(32), 63 DUP(176), 10, "$" 
 BV2 DB 13, 8 DUP(32), 2 DUP(176), "  ___  ___  ___  _  _ __   __ ___  _  _  ___  ___    ___   ", 2 DUP(176), 10, "$"       
 BV3 DB 13, 8 DUP(32), 2 DUP(176), " | _ )|_ _|| __|| \| |\ \ / /| __|| \| ||_ _||   \  / _ \  ", 2 DUP(176), 10, "$"      
 BV4 DB 13, 8 DUP(32), 2 DUP(176), " | _ \ | | | _| | .` | \ V / | _| | .` | | | | |) || (_) | ", 2 DUP(176), 10, "$"   
@@ -1241,7 +1226,7 @@ LINEA2       DB 13, 200, 78 DUP(205), 188, 10, "$"
 
    
 ;MENSAJE PARA PEDIR OPCION
-IUO DB 13, 10, "Ingresa una opci", 162,"n:", 2 DUP(10), 13, "$"
+IUO DB 13, "Ingresa una opci", 162,"n:", 2 DUP(10), "$"
 
 ;MENU PRINCIPAL
 JUGAR  DB 13, 9, "1. Jugar", 10, "$"
@@ -1251,7 +1236,7 @@ SALIR  DB 13, 9, "4. Salir del juego", 2 DUP(10), "$"
 ;SEGUNDO MENU (DESPUES DE MOSTRAR LAS REGLAS DEL JUEGO)
 REP_REGLAS DB 13, 9, "3. Repetir las reglas", 10, "$" 
 
-;MENSAJE PARA PEDIR OPCION
+;CARACTER PARA PEDIR OPCION
 MSJ_OP DB 13, 9, 16, " $"
 
 ;MENSAJE DE OPCION INCORRECTA
@@ -1285,7 +1270,7 @@ MAN22   DB 200, 78 DUP(205), 188, 10, "$"
 ESP_MAN DB 13, 186, 78 DUP(32), 186, "$"
 
 ;?Que quieres hacer ahora?   
-QQHA DB 10, 13, 168, "Qu", 130, " quieres hacer ahora?", 2 DUP(10), 13, "$" 
+QQHA DB 13, 168, "Qu", 130, " quieres hacer ahora?", 2 DUP(10), 13, "$" 
 
 
 ;NAVIOS PARA UBICAR EN PANTALLA DE CARGA
@@ -1388,7 +1373,7 @@ MSJ_PORT_HUNDIDO DB 3 DUP(205), "> ", 5 DUP(173), "Portaviones hundido!!!!!$"
 
 ;RESUMEN DE PARTIDA
 IMP1 DB 2 DUP(10), 13, "Lograste hundir $"
-IMP2 DB " nav", 161, "o(s) ...", 3 DUP(10), "$"
+IMP2 DB " nav", 161, "o(s) ...", 4 DUP(10), "$"
 
 ;TERCER MENU (DESPUES DE FINALIZAR PARTIDA)
 QJDN DB 13, 168, "Quieres jugar de nuevo?", 2 DUP(10), "$"
@@ -1478,6 +1463,30 @@ DIRECCION_NAVIO PROC
     RETORNAR:
         RET
 DIRECCION_NAVIO ENDP
+    
+
+;LIMPIA MENSAJES DE OPCION INCORRECTA (EN EL MENU RESPECTIVO) Y POSICIONA EL CURSOR PARA INGRESAR NUEVAMENTE UNA OPCION
+LIMPIAR_MSJ_OP_INC PROC
+    MOV AH, 02h
+    MOV DH, 22
+    MOV DL, 0
+    INT 10h
+    MOV AH, 09h
+    LEA DX, EEB
+    INT 21h
+    INT 21h
+    MOV AH, 02h
+    MOV DH, 20
+    MOV DL, 10
+    INT 10h
+    MOV DX, 32
+    INT 21h
+    MOV DH, 20
+    MOV DL, 10
+    INT 10h
+    
+    RET
+LIMPIAR_MSJ_OP_INC ENDP
 
 
 ;LIMPIA DETERMINADOS MENSAJES DURANTE EL TRANSCURSO DEL JUEGO
@@ -1494,7 +1503,6 @@ LIMPIAR_MSJS_POSICION PROC
     MOV DH, 17
     MOV DL, 0
     INT 10h
-    
     ;Imprime en consola espacios en blanco para limpiar mensajes previos
     MOV AH, 09h
     LEA DX, EEB
@@ -1524,7 +1532,7 @@ PREPARAR_FINAL_PARTIDA PROC
     MOV AH, 09h
     LEA DX, PTPC
     INT 21h
-    MOV AH, 01h
+    MOV AH, 07h
     INT 21h
     
     RET
