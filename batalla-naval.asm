@@ -1372,8 +1372,8 @@ MSJ_PORT_HUNDIDO DB 3 DUP(205), "> ", 5 DUP(173), "Portaviones hundido!!!!!$"
 
 
 ;RESUMEN DE PARTIDA
-IMP1 DB 2 DUP(10), 13, "Lograste hundir $"
-IMP2 DB " nav", 161, "o(s) ...", 4 DUP(10), "$"
+IMP1 DB 3 DUP(10), 13, "Lograste hundir $"
+IMP2 DB " nav", 161, "o(s) ...", 3 DUP(10), "$"
 
 ;TERCER MENU (DESPUES DE FINALIZAR PARTIDA)
 QJDN DB 13, 168, "Quieres jugar de nuevo?", 2 DUP(10), "$"
