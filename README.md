@@ -16,7 +16,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ### Opción 1: _Jugar_
 * __Juego en Progreso__
-![image](https://user-images.githubusercontent.com/34144827/144684809-477d95b7-b078-466e-90be-85bb6e837145.png)
+![image](https://user-images.githubusercontent.com/34144827/144685447-741eddc1-ed81-496a-b7f9-6cb62e3c4ac5.png)
 
 <br/>
 
@@ -32,28 +32,28 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ### Opción 2: _Jugar en Modo de Prueba_
 * __Juego en Progreso__
-![image](https://user-images.githubusercontent.com/34144827/144347331-57d8fd25-6660-4bc0-9f4c-1e96f4349218.png)
+![image](https://user-images.githubusercontent.com/34144827/144686099-81d276b1-f7eb-4fc1-9b20-e6db310902a6.png)
 
 <br/>
 
 * __Juego Perdido__
-![image](https://user-images.githubusercontent.com/34144827/144348427-5d618e64-3416-48cd-98c6-21461ae289fe.png)
+![image](https://user-images.githubusercontent.com/34144827/144686157-c0162bbd-06cf-45f6-ad05-883cacaa658c.png)
 
 <br/>
 
 * __Juego Ganado__
-![image](https://user-images.githubusercontent.com/34144827/144347712-362dd1d6-bae5-4cad-9d42-701465a0f028.png)
+![image](https://user-images.githubusercontent.com/34144827/144686255-e8696fa4-a4f0-44cb-b12c-8b8961abf467.png)
 
 <br/>
 
 ### Opción 3: _Reglas del juego_
 * __Parte 1__
-![image](https://user-images.githubusercontent.com/34144827/143937225-c78f3d2a-eba8-4c15-ae64-51a6de0a74bb.png)
+![image](https://user-images.githubusercontent.com/34144827/144686302-2e11bb20-5c69-4334-a330-c3e6910c16b4.png)
 
 <br/>
 
 * __Parte 2__
-![image](https://user-images.githubusercontent.com/34144827/143937292-aff58e52-f4dc-49c1-8283-94ef3b2814d2.png)
+![image](https://user-images.githubusercontent.com/34144827/144686404-2255b320-3250-4b12-87a0-439087e71835.png)
 
 <br/>
 
@@ -62,7 +62,37 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 <br/>
 
-### Adicional: _Opción Incorrecta_
-![image](https://user-images.githubusercontent.com/34144827/143946403-65715a85-3dff-4d92-b091-2b7c9087fddf.png)
+### Adicional: _Validación de Opciones_
+* Menú 1
+![image](https://user-images.githubusercontent.com/34144827/144686618-5df11426-5380-47d1-97ec-a2472acdf1c4.png)
+
+<br/>
+
+* Menú 2
+![image](https://user-images.githubusercontent.com/34144827/144686487-6f7f736b-f7e9-4aa1-aa07-3d135c5e6760.png)
+
+<br/>
+
+* Menú 3
+![image](https://user-images.githubusercontent.com/34144827/144687015-b41af2c1-de4f-4673-b4f1-c7a406cc5e18.png)
+
+<br/>
+
+* Menú 4
+![image](https://user-images.githubusercontent.com/34144827/144687185-cf6f4b76-d509-47ff-864e-f7a7e259d5d6.png)
+
+<br/>
+
+* Juego en Progreso: _Columna Inválida_
+![image](https://user-images.githubusercontent.com/34144827/144686772-7d41e12b-ca76-40a3-a885-602b82e8f748.png)
+
+
+* Juego en Progreso: _Fila Inválida_
+![image](https://user-images.githubusercontent.com/34144827/144686861-08252d51-22ce-49ad-bf9a-88ef41a88552.png)
+
+<br/>
+
+* Juego en Progreso: _Posición Repetida_
+![image](https://user-images.githubusercontent.com/34144827/144686874-af5e74f0-155c-4434-b871-abadb5d2de15.png)
 
 <br/>
