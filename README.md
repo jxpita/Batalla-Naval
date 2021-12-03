@@ -5,7 +5,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ## Vista Previa
 ### Pantalla de Inicio (Menú Principal)
-![image](https://user-images.githubusercontent.com/34144827/143937163-b6fe7b2d-8c4b-409f-bb11-4cfebe4c0703.png)
+![image](https://user-images.githubusercontent.com/34144827/144684375-bcf40cbb-c23a-4f83-8f76-c11584d7e91b.png)
 
 <br/>
 
@@ -16,7 +16,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 
 ### Opción 1: _Jugar_
 * __Juego en Progreso__
-![image](https://user-images.githubusercontent.com/34144827/144348844-6bb4b9c7-458c-4b4d-bab0-d4c7992fef95.png)
+![image](https://user-images.githubusercontent.com/34144827/144684809-477d95b7-b078-466e-90be-85bb6e837145.png)
 
 <br/>
 
