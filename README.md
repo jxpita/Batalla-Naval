@@ -79,7 +79,7 @@ Juego "Batalla Naval" (_Battleship_) simulado en emu8086.
 <br/>
 
 * Menú 4
-![image](https://user-images.githubusercontent.com/34144827/144687185-cf6f4b76-d509-47ff-864e-f7a7e259d5d6.png)
+![image](https://user-images.githubusercontent.com/34144827/144687572-a2845b0b-3e77-48f2-aa0b-7ecb8263f0f4.png)
 
 <br/>
 
